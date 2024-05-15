@@ -1,0 +1,2870 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUCE</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://api.longdo.com/map/?key=365a698c226f1b77c3218bb30fbf6181"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.2/proj4.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    <link rel="icon" type="image/png" sizes="12x12" href="https://i.postimg.cc/VkVjXhz2/2015-color-en.png">
+</head>
+<body onload="initMap();">
+    
+    <!--navbar-->
+    <div class="navbar">
+        <header class="header-content">
+            <img src="https://i.postimg.cc/VkVjXhz2/2015-color-en.png" alt="Logo" style="width: 50px; height: auto;">
+            <button class="button-66 lang" data-key="manualButton48" id="myButton" role="button">Manual📖</button>
+
+        </header>
+        <div class="steps-buttons">
+            <button class="step-btna lang" data-key="step1" onclick="showStep(1)">Step 1</button>
+            <button class="step-btna lang" data-key="step2" onclick="showStep(2)">Step 2</button>
+            <button class="step-btna lang" data-key="step3" onclick="showStep(3)">Step 3</button>
+            <button class="step-btna lang" data-key="step4" onclick="showStep(4)">Step 4</button>
+            <button class="step-btna lang" data-key="step5" onclick="showStep(5)">Step 5</button>
+        </div>
+        <div class="language-contract-buttons">
+            <button class="contract" onclick="goToLink()" style="margin-right: 10px;">contact</button>
+        <button class="change-language-btn lang" data-key="changeLanguageButton" onclick="changeLanguage()">ภาษา:ไทย</button>
+        </div>
+    </div>
+    
+    <!--step1-->
+    <div id="step1" class="step">
+        <h2 class="lang" data-key="step1Title">Step 1: เพิ่มข้อมูลรายชื่อหมุด</h2>
+        <input type="text" id="pinName" class="lang-placeholder" data-key="pinNamePlaceholder" onkeypress="handleKeyPress(event)">
+        <button onclick="addPin()" class="add-btn lang" data-key="addButton">เพิ่ม</button>
+        <input type="file" id="importFile" accept=".xlsx, .xls" />
+        <button onclick="importExcelData()" class="add-btn lang" data-key="importData">ImportData</button>
+        <button class="add-btn lang" data-key="exportPinsButton" onclick="exportStepsToExcel()">Export to Excel</button>
+        <table id="pinTable">
+            <tr>
+                <th>ลำดับ</th>
+                <th>ชื่อหมุด</th>
+                <th>การกระทำ</th>
+            </tr>
+            <!-- Rows will be added here by JavaScript -->
+        </table>
+    </div>
+
+     <!--step2-->
+    <div id="step2" class="step" style="display: none;">
+        <h2 class="lang" data-key="step2Title">Step 2: สร้างตารางรังวัดมุมภายใน</h2>
+        <!-- Dropdowns for selecting pins -->
+        <div>
+            <span class="lang" data-key="stationCamera">หมุดตั้งกล้อง:</span> <select id="stationSelect"></select>
+        <span class="lang" data-key="object1">หมุดที่ส่อง1:</span> <select id="object1Select"></select>
+        <span class="lang" data-key="object2">หมุดที่ส่อง2:</span> <select id="object2Select"></select>
+        <button class="step-btn lang" data-key="createTable" onclick="createSurveyTable()">สร้างตาราง</button>
+        
+        <button onclick="importSurveyTable()">Import Table</button>
+        <button onclick="importSurveyTableHAHD()">Import Survey Data HAHD</button>
+        <!-- Dropdown สำหรับเลือกตารางตามชื่อสถานี -->
+        <button class="add-btn lang" data-key="exportStepsExcel"onclick="exportStepsToExcel()">Export Steps 1 & 2 to Excel</button>
+        <select id="tableSelect">
+        <!-- ตัวเลือกจะถูกเพิ่มโดย JavaScript -->
+        </select>
+
+        <!-- ปุ่มลบตารางที่เลือก -->
+        <button id="deleteButton" class="delete-style lang" data-key="deleteTable" onclick="deleteSelectedTable()">ลบ</button>
+        <!-- Export Button -->
+        </div>
+        <div id="surveyTables">
+            <!-- Survey tables will be added here by JavaScript -->
+        </div>
+        <div>
+            <table id="hdDataTable" class="hidden">
+                <!-- ... ข้อมูลตาราง HD ... -->
+              </table>
+              
+              <table id="averageHDDataTable">
+                <!-- ... ข้อมูลตารางเฉลี่ย HD ... -->
+              </table>
+        </div>
+        <table id="swappedAverageHDTable">
+            <tr>
+              <th>Station 1</th>
+              <th>Object 1</th>
+              <th>Station 2</th>
+              <th>Object 2</th>
+              <th>Swapped Average HD</th>
+            </tr>
+            <!-- ตารางจะถูกเติมข้อมูลด้วย JavaScript -->
+          </table>
+
+          <table id="finalHDTable">
+            <!-- ข้อมูลจะถูกเติมที่นี่โดย JavaScript -->
+          </table>
+          
+          
+
+    </div>
+
+     <!--step3-->
+    <div id="step3" class="step" style="display: none;">
+        <h2 class="lang" data-key="step3Title">Step 3: ตารางรังวัดมุมภายใน</h2>
+
+        <button class="add-btn lang" data-key="exportToExcel" onclick="exportStepsToExcel()">Export to Excel</button>
+        <table id="measurementTable">
+            <!-- ตารางจะถูกสร้างโดย JavaScript -->
+        </table>
+        <!-- ปุ่มที่ใช้สำหรับสลับการแสดงผล -->
+        <button class="standard1 lang" data-key="standardButton" onclick="toggleImage()">มาตรฐาน</button>
+
+        <!-- รูปภาพที่จะถูกสลับการแสดงผล เริ่มต้นจะถูกซ่อน -->
+        <img id="standardImage" src="https://i.postimg.cc/3xBjR8BG/image.png" style="display:none;" alt="Standard Image">
+        <!-- สร้างตารางใหม่ -->
+        <table id="step3Table">
+            <tr>
+                <td class="lang" data-key="fillNForLayer49">กรอกค่า N สำหรับชั้นงานที่ต้องการ</td>
+                <td><input type="number" id="inputNValue"></td>
+            </tr>
+            <tr>
+                <td class="lang" data-key="errorLabel49">Error</td>
+                <td id="errorValue">0</td>
+            </tr>
+            <tr>
+                <td class="lang" data-key="allowedErrorForLayer49">ค่าที่ยอมให้ตามชั้นงาน</td>
+                <td id="allowedError">0</td>
+            </tr>
+            <tr>
+                <td class="lang" data-key="checkErrorAllowed49">ตรวจสอบ Error ค่าที่ยอมให้ตามชั้นงาน</td>
+                <td id="checkResult"></td>
+            </tr>
+        </table>
+        
+  
+    </div>
+    
+     <!--step4-->
+    <div id="step4" class="step" style="display: none;">
+        <h2 class="lang" data-key="step4Title">Step 4: ตารางปรับแก้ Depature และ Latitude</h2>
+        <button class="add-btn lang" data-key="exportToExcel" onclick="exportStepsToExcel()">Export to Excel</button>
+        <!-- ปุ่ม ImportFirstData ใช้งาน input file ที่มีอยู่แล้ว -->
+        <button onclick="importFirstData1()">Import First Data</button>
+        <button onclick="importFirstData2()" class="calcux lang" data-key="calculateButton" style="display: none;">Calculate</button>
+
+        <div class="inputazbutton">
+            <input type="text" id="azimuthValue" class="lang-placeholder" data-key="azimuthPlaceholder" placeholder="ป้อนค่า Azimuth แรก">
+            <button class="step-btn lang" data-key="addAzimuth" onclick="addAzimuth()">Add Azimuth</button>
+            
+            <input type="text" id="EastValue" class="lang-placeholder" data-key="eastPlaceholder" placeholder="Enter East Coordinate">
+            <button class="step-btn lang" data-key="addEast" onclick="addCoordinateEast()">Add Coordinate East</button>
+            
+            <input type="text" id="NorthValue" class="lang-placeholder" data-key="northPlaceholder" placeholder="Enter North Coordinate">
+            <button class="step-btn lang" data-key="addNorth" onclick="addCoordinateNorth()">Add Coordinate North</button>
+            
+          </div>
+        <table id="deplatTable">
+            <!-- ... your table rows and cells ... -->
+        </table>
+        <!-- Add input and button for azimuth value -->  
+        <button class="standard1a lang" data-key="standard2Button" onclick="toggleNewImage()">มาตรฐาน2</button>
+
+        <!-- รูปภาพใหม่ที่จะถูกสลับการแสดงผล -->
+        <img id="newImage" src="https://i.postimg.cc/3xBjR8BG/image.png" alt="Image">
+        <table id="additionalTable">
+            <tr>
+              <td>P</td>
+              <td id="additionalTableRow1Column2"></td> <!-- จะถูกอัพเดตด้วย JavaScript -->
+            </tr>
+            <tr>
+              <td>E</td>
+              <td id="additionalTableRow2Column2"></td> <!-- จะถูกอัพเดตด้วย JavaScript -->
+            </tr>
+            <tr>
+              <td>Accuracy Ratio (P/E) = 1 :</td>
+              <td id="additionalTableRow3Column2"></td> <!-- จะถูกอัพเดตด้วย JavaScript -->
+            </tr>
+          </table>
+          
+    </div>
+
+     <!--step5-->
+    <div id="step5" class="step" style="display: none;">
+        <h2 class="lang" data-key="step5Title">Step 5: พิกัดบนแผนที่</h2>
+        <button class="add-btn lang" data-key="exportToExcel"onclick="exportStepsToExcel()">Export to Excel</button>
+        <div id="map"></div>
+        <table id="myTable3"></table>
+        </table>
+        <table id="distanceTable">
+            <tr>
+                <td colspan="3">
+                    <button class="add-button lang" data-key="calculateDistance" data-action="distance">คำนวณระยะทางระหว่างพิกัดหมุด</button>
+                </td>
+              </tr>
+          <tr>
+            <th class="lang" data-key="from">จาก</th>
+            <th class="lang" data-key="to">ถึง</th>
+            <th class="lang" data-key="distance">ระยะ</th>
+          </tr>
+          <!-- Table for area calculation -->
+          <table id="myTable2">
+            <tr>
+              <td>
+                <button class="add-button lang" data-key="calculateArea" data-action="calculateAreaAndTogglePolygon">คำนวณพื้นที่</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="resultDisplay" data-key="areaDisplay"></div>
+                <div id="distanceResult"></div>
+              </td>
+            </tr>
+          </table>
+    </div>
+
+
+
+<script >
+        let pins = [];
+let surveyTables = [];
+
+function addPin() {
+    const pinName = document.getElementById('pinName').value;
+    if (pinName && !pins.includes(pinName)) {
+        pins.push(pinName);
+        document.getElementById('pinName').value = '';
+        updateUI();
+        calculateInnerAngle();
+    }
+}
+
+function movePin(index, direction) {
+    if (direction === 'up' && index > 0) {
+        [pins[index], pins[index - 1]] = [pins[index - 1], pins[index]];
+    } else if (direction === 'down' && index < pins.length - 1) {
+        [pins[index], pins[index + 1]] = [pins[index + 1], pins[index]];
+    }
+    updateUI();
+}
+
+
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        addPin();
+    }
+}
+
+function deletePin(index) {
+    pins.splice(index, 1);
+    updateUI();
+}
+// อัพเดตตารางของหมุด (Pins) ตามข้อมูลปัจจุบัน
+function updatePinTable() {
+    const newLang = document.body.getAttribute('data-lang'); // ดึงภาษาปัจจุบัน
+    const table = document.getElementById('pinTable');
+    let tableHTML = `<tr><th>${languageData[newLang]['sequence']}</th><th>${languageData[newLang]['pinName']}</th><th>${languageData[newLang]['swapDelete']}</th></tr>`;
+    pins.forEach((pin, index) => {
+        tableHTML += `<tr><td>${index + 1}</td><td>${pin}</td><td>
+            <button class='movepin-btn' onclick='movePin(${index}, "up")'>${languageData[newLang]['up']}</button>
+            <button class='movepin-btn' onclick='movePin(${index}, "down")'>${languageData[newLang]['down']}</button>
+            <button class='delete-btn' onclick='deletePin(${index})'>${languageData[newLang]['delete']}</button>
+            </td></tr>`;
+    });
+    table.innerHTML = tableHTML;
+}
+
+
+function updateAdditionalTableCalculations() {
+  // ดึงค่าต่างๆ
+  var totalDistanceValue = document.getElementById("totalDistance").textContent || "0";
+  var totalDepartureValue = parseFloat(document.getElementById("totalDeparture").textContent) || 0;
+  var totalLatitudeValue = parseFloat(document.getElementById("totalLatitude").textContent) || 0;
+
+  // อัพเดตแถวที่ 1 คอลัมน์ที่ 2 ด้วยค่าจาก totalDistance
+  document.getElementById("additionalTableRow1Column2").textContent = totalDistanceValue;
+
+  // คำนวณสำหรับแถวที่ 2 คอลัมน์ที่ 2
+  var calculationForRow2Column2 = Math.sqrt(Math.pow(totalDepartureValue, 2) + Math.pow(totalLatitudeValue, 2));
+  document.getElementById("additionalTableRow2Column2").textContent = calculationForRow2Column2.toFixed(4);
+
+  // คำนวณสำหรับแถวที่ 3 คอลัมน์ที่ 2
+  var calculationForRow3Column2 = parseFloat(totalDistanceValue) / calculationForRow2Column2;
+  document.getElementById("additionalTableRow3Column2").textContent = calculationForRow3Column2.toFixed(4);
+}
+
+// สั่งให้ JavaScript อัพเดตตารางเมื่อหน้าเว็บโหลดเสร็จสมบูรณ์
+document.addEventListener('DOMContentLoaded', function() {
+    updateAdditionalTableCalculations();
+});
+
+// ฟังก์ชันเพื่อแปลงค่า DMS ไปเป็นวินาที
+function convertDMSToSeconds(dmsValue) {
+  var parts = dmsValue.match(/-?\d+\.?\d*/g);
+  var degrees = parseInt(parts[0], 10);
+  var minutes = parseInt(parts[1], 10);
+  var seconds = parseFloat(parts[2]);
+  var totalSeconds = degrees * 3600 + minutes * 60 + seconds;
+  return degrees < 0 ? -totalSeconds : totalSeconds;
+}
+
+// ฟังก์ชันเพื่ออัปเดตการคำนวณในตาราง
+function updateTableCalculations() {
+  var errorValue = document.getElementById('errorangle').textContent || "0";
+  var errorInSeconds = convertDMSToSeconds(errorValue);
+  document.getElementById('errorValue').textContent = errorInSeconds.toFixed(2);
+}
+
+document.getElementById('inputNValue').addEventListener('input', updateTableCalculations);
+document.addEventListener('DOMContentLoaded', updateTableCalculations);
+
+
+// เพิ่ม Event Listener ให้กับ input field สำหรับค่า N
+document.getElementById('inputNValue').addEventListener('input', updateTableCalculations);
+
+// เรียกใช้ฟังก์ชันเพื่ออัปเดตค่าเมื่อหน้าเว็บโหลด
+document.addEventListener('DOMContentLoaded', updateTableCalculations);
+
+// ฟังก์ชันเพื่อคำนวณค่าที่ยอมให้ตามชั้นงานและตรวจสอบผลลัพธ์
+function updateAllowedErrorAndCheckResult() {
+    var inputNValue = parseFloat(document.getElementById('inputNValue').value) || 0;
+    var numberOfPins = pins.length; // สมมติว่าคุณมี array 'pins' ที่ได้กำหนดไว้แล้ว
+    var errorValue = parseFloat(document.getElementById('errorValue').textContent) || 0;
+
+    // คำนวณ allowed error สำหรับชั้นงาน
+    var allowedError = inputNValue * Math.sqrt(numberOfPins);
+    document.getElementById('allowedError').textContent = allowedError.toFixed(2);
+
+    // ตรวจสอบว่า error ที่วัดได้น้อยกว่าหรือเท่ากับ allowed error หรือไม่
+    var checkResult = errorValue <= allowedError ? 'OK' : 'NOT OK';
+    var checkResultElement = document.getElementById('checkResult');
+    checkResultElement.textContent = checkResult;
+
+    // เปลี่ยนสีตามเงื่อนไข
+    if(checkResult === 'OK') {
+        checkResultElement.className = 'ok4747';
+    } else {
+        checkResultElement.className = 'not-ok4747';
+    }
+}
+
+
+// เพิ่ม Event Listener ให้กับ input field สำหรับค่า N เพื่อคำนวณ allowed error และตรวจสอบผลลัพธ์ทุกครั้งที่มีการป้อนค่า
+document.getElementById('inputNValue').addEventListener('input', updateAllowedErrorAndCheckResult);
+
+// เรียกใช้ฟังก์ชันเพื่ออัปเดตค่าเมื่อหน้าเว็บโหลด
+document.addEventListener('DOMContentLoaded', updateAllowedErrorAndCheckResult);
+
+
+function toggleImage() {
+    var img = document.getElementById("standardImage");
+    // ตรวจสอบว่ารูปภาพกำลังถูกแสดงอยู่หรือไม่ และสลับสถานะการแสดงผล
+    if (img.style.display === "none") {
+        img.style.display = "block";
+    } else {
+        img.style.display = "none";
+    }
+}
+
+function toggleNewImage() {
+    var img = document.getElementById("newImage");
+    // สลับสถานะการแสดงผลรูปภาพ
+    img.style.display = img.style.display === "none" ? "block" : "none";
+}
+
+function importExcelData() {
+    var fileInput = document.getElementById('importFile');
+    var file = fileInput.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {type: 'array'});
+            var sheetName = workbook.SheetNames.find(name => {
+                var sheet = workbook.Sheets[name];
+                var cell = sheet['B1'];
+                return cell && cell.v === 'Object';
+            });
+            if (sheetName) {
+                var worksheet = workbook.Sheets[sheetName];
+                for (var row = 2; ; row += 9) {
+                    var address = 'A' + row;
+                    var cell = worksheet[address];
+                    if (!cell) break;
+                    addPinff(cell.v); // ใช้ฟังก์ชัน addPin ที่มีอยู่สำหรับเพิ่มหมุด
+                }
+            } else {
+                alert("Sheet with B1 as 'Object' not found.");
+            }
+            importSurveyTable();
+            setTimeout(function() {
+                importFirstData2(); // เรียกใช้ฟังก์ชันนี้หลังจาก 1 วินาที
+            }, 2000); // 
+
+            setTimeout(function() {
+                addAzimuth(); // เรียกใช้ฟังก์ชันนี้หลังจาก 1 วินาที
+            }, 3000); // 
+
+            setTimeout(function() {
+                importFirstData2(); // เรียกใช้ฟังก์ชันนี้หลังจาก 1 วินาที
+            }, 13000); // 
+
+            setTimeout(function() {
+                addAzimuth(); // เรียกใช้ฟังก์ชันนี้หลังจาก 1 วินาที
+            }, 14000); // 
+
+            setTimeout(function() {
+                importFirstData2(); // เรียกใช้ฟังก์ชันนี้หลังจาก 1 วินาที
+            }, 20000); // 
+
+            setTimeout(function() {
+                addAzimuth(); // เรียกใช้ฟังก์ชันนี้หลังจาก 1 วินาที
+            }, 21000); // 
+
+            
+    
+        };
+        reader.readAsArrayBuffer(file);
+    } else {
+        showAlert('pleaseSelectFile');
+    }
+}
+
+function addPinff(pinName) {
+    // ตรวจสอบและเพิ่มรายชื่อหมุด เช่น การอัปเดต UI หรือรายการหมุด
+    // โค้ดนี้ควรเป็นโค้ดที่คุณใช้ในการเพิ่มหมุดตามปกติ
+    if (!pins.includes(pinName)) {
+        pins.push(pinName);
+        updateUI(); // อัปเดต UI เพื่อแสดงรายการหมุดใหม่
+    }
+}
+
+function updateTableDropdown() {
+    const tableSelect = document.getElementById('tableSelect');
+    tableSelect.innerHTML = '';
+
+    // อันนี้คือเรียงลำดับตารางที่มี index มากสุด (หรือเพิ่มเข้าไปล่าสุด) ให้แสดงก่อนใน dropdown
+    for (let i = surveyTables.length - 1; i >= 0; i--) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `Station: ${surveyTables[i].station}`;
+        tableSelect.appendChild(option);
+    }
+}
+
+
+function deleteTableByStation() {
+    const selectedStationIndex = document.getElementById('tableSelect').value;
+    // ตรวจสอบว่าเลือก station จริง
+    if (selectedStationIndex !== '') {
+        const tableElement = document.getElementById(`surveyTable-${selectedStationIndex}`);
+        if (tableElement) {
+            tableElement.remove(); // ลบเฉพาะตารางที่เลือก
+        }
+        surveyTables.splice(selectedStationIndex, 1); // ลบข้อมูลตารางจาก array
+        updateTableDropdown(); // อัปเดต dropdown
+    }
+}
+
+
+function setupDeleteButton() {
+    const deleteButton = document.getElementById('deleteButton');
+    deleteButton.addEventListener('click', deleteTableByStation);
+}
+
+
+// และเรียกใช้งานฟังก์ชันนี้เมื่อหน้าเว็บโหลดเสร็จ
+document.addEventListener('DOMContentLoaded', setupDeleteButton);
+
+
+// ตั้งค่า event listeners เมื่อหน้าเว็บโหลดเสร็จ
+document.addEventListener('DOMContentLoaded', function() {
+    // อัปเดต dropdown เมื่อโหลดหน้าเว็บ
+    updateTableDropdown();
+    // ตั้งค่า event listener สำหรับปุ่มลบ
+    setupDeleteButton();
+});
+
+
+// Object ที่เก็บข้อความสำหรับแต่ละภาษา
+const languageData = {
+  'en': {
+    'step1Title': 'Step 1: Add Pin list data',
+    'changeLanguageButton': 'Language : English',
+    'step1': 'Step 1',
+  'step2': 'Step 2',
+  'step3': 'Step 3',
+  'step4': 'Step 4',
+  'step5': 'Step 5',
+  'pinNamePlaceholder': 'Pin Name',
+  'addButton': 'Add',
+  'exportPinsButton': 'Export to Excel',
+  'sequence': 'Sequence',
+  'pinName': 'Pin Name',
+  'swapDelete': 'Swap / Delete',
+  'up': 'Up ⬆️',
+  'down': 'Down ⬇️',
+  'delete': 'Delete ❌',
+  'importData': 'Import Data',
+  'step2Title': 'Step 2: Create Internal Angle Measurement Table',
+  'stationCamera': 'Station:',
+  'object1': 'Object 1:',
+  'object2': 'Object 2:',
+  'createTable': 'Create Table',
+  'exportStepsExcel': 'Export to Excel',
+  'deleteTable': 'Delete',
+  'step3Title': 'Step 3: Internal Angle Survey Table',
+  'step4Title': 'Step 4: Adjusting Departure and Latitude Table',
+  'azimuthPlaceholder': 'Enter initial Azimuth (°)',
+  'addAzimuth': 'Add Azimuth ',
+  'eastPlaceholder': 'Enter East Coordinate  (meter)',
+  'addEast': 'Add Coordinate East',
+  'northPlaceholder': 'Enter North Coordinate  (meter)',
+  'addNorth': 'Add Coordinate North',
+  'step5Title': 'Step 5: Map Coordinates',
+  'exportToExcel': 'Export to Excel',
+  'calculateDistance': 'Calculate Distance Between Pins',
+  'from': 'From',
+  'to': 'To',
+  'calculateArea': 'Calculate Area',
+  'distance': 'Distance',
+  'pinCoordinates': 'Pin Coordinates',
+  'exportToExcel': 'Export to Excel',
+  'pleaseSelectFile': 'Please select a file.',
+  'calculateButton': 'Calculate',
+  'errorPinInvalid': 'The operation cannot continue because the pin is incorrect or already in use.',
+  'errorPinInvalid': 'The operation cannot continue because the pin is incorrect or already in use.',
+  'errorAzimuthValue': 'Please enter a valid azimuth value between 0 and 359.99999.',
+  'errorEastCoordinate': 'Please enter a valid East coordinate.',
+  'errorNorthCoordinate': 'Please enter a valid North coordinate.',
+  'areaCalculationWarning': 'Please add at least 3 markers for area calculation.',
+  'areaResultPrefix': 'Area:',
+  'areaUnit': 'square meters',
+  'meter': 'meter',
+  'longitudeOutOfRange': 'The provided longitude is not in the specified range (96 to 108).',
+  'minimumTwoCoordinatesAlert': 'Please add at least 2 coordinates to calculate distance.',
+  'noPinData': 'No pin data available',
+    'station': 'Station',
+    'ha': 'Horizontal Angle (° \' ")',
+    'correction2': 'Correction (° \' ")',
+    'adjustedHA': 'Adjusted Horizontal Angle (° \' ")',
+    'station': 'Station',
+    'adjustedHA': 'Adjusted Horizontal Angle (°)',
+    'azimuth': 'Azimuth (°)',
+    'distanceMeter': 'Distance (meter)',
+    'departure': 'Departure (meter)',
+    'latitude': 'Latitude (meter)',
+    'correction': 'Correction',
+    'balanced': 'Balanced',
+    'east': 'Easting (meter)',
+    'north': 'Northing (meter)',
+    'pinCoordinates47': 'Pin Coordinates',
+    'east47': 'Easting (meter)',
+    'north47': 'Northing (meter)',
+    'lon47': 'Longitude ( ° )',
+    'lat47': 'Latitude ( ° )',
+    'station48': 'Station',
+    'object48': 'Object',
+    'horizontalAngleReading48': 'Horizontal Angle Reading (° \' ")',
+    'horizontalAngle48': 'Horizontal Angle (° \' ")',
+    'averageHorizontalAngle48': 'Average Horizontal Angle (° \' ")',
+    'horizontalDistanceMeter48': 'Horizontal Distance (meter)',
+    'manualButton48': 'Manual📖',
+    'fillNForLayer49': 'Enter Factor Value by Order Class (")',
+    'errorLabel49': 'Error (")',
+    'allowedErrorForLayer49': 'Allowed Error  (")',
+    'checkErrorAllowed49': 'Check',
+    'standard2Button': 'Standard',
+  'standardButton': 'Standard',
+  },
+
+
+  'th': {
+    'step1Title': 'ขั้นตอนที่ 1: เพิ่มข้อมูลรายชื่อหมุด',
+    'changeLanguageButton': 'ภาษา : ไทย',
+    'step1': 'ขั้นตอนที่ 1',
+  'step2': 'ขั้นตอนที่ 2',
+  'step3': 'ขั้นตอนที่ 3',
+  'step4': 'ขั้นตอนที่ 4',
+  'step5': 'ขั้นตอนที่ 5',
+  'pinNamePlaceholder': 'ชื่อหมุด',
+  'addButton': 'เพิ่ม',
+  'exportPinsButton': 'ส่งออกเป็น Excel',
+  'sequence': 'ลำดับ',
+  'pinName': 'ชื่อหมุด',
+  'swapDelete': 'สลับลำดับ / ลบ',
+  'up': 'ขึ้น ⬆️',
+  'down': 'ลง ⬇️',
+  'delete': 'ลบ ❌',
+  'importData': 'นำเข้าข้อมูล',
+  'step2Title': 'ขั้นตอนที่ 2: สร้างตารางรังวัดมุมภายใน',
+  'stationCamera': 'หมุดตั้งกล้อง:',
+  'object1': 'หมุดที่ส่อง1:',
+  'object2': 'หมุดที่ส่อง2:',
+  'createTable': 'สร้างตาราง',
+  'exportStepsExcel': 'ส่งออกเป็น Excel',
+  'deleteTable': 'ลบ',
+  'step3Title': 'ขั้นตอนที่ 3: ตารางรังวัดมุมภายใน',
+   'step4Title': 'ขั้นตอนที่ 4: ตารางปรับแก้ Depature และ Latitude',
+  'azimuthPlaceholder': 'ป้อนค่าแอซิมัทแรก (°)',
+  'addAzimuth': 'เพิ่มแอซิมัท',
+  'eastPlaceholder': 'ป้อนพิกัดตะวันออก (เมตร)',
+  'addEast': 'เพิ่มพิกัดตะวันออกแรก',
+  'northPlaceholder': 'ป้อนพิกัดเหนือ (เมตร)',
+  'addNorth': 'เพิ่มพิกัดเหนือ',
+  'step5Title': 'ขั้นตอนที่ 5: พิกัดบนแผนที่',
+  'exportToExcel': 'ส่งออกเป็น Excel',
+  'calculateDistance': 'คำนวณระยะทางระหว่างพิกัดหมุด',
+  'from': 'จาก',
+  'to': 'ถึง',
+  'calculateArea': 'คำนวณพื้นที่',
+  'distance': 'ระยะ',
+  'pinCoordinates': 'พิกัดหมุด',
+  'exportToExcel': 'ส่งออกเป็น Excel',
+  'pleaseSelectFile': 'กรุณาเลือกไฟล์.',
+  'calculateButton': 'คำนวณ',
+  'errorPinInvalid': 'ไม่สามารถดำเนินการต่อได้เนื่องจากหมุดไม่ถูกต้องหรือถูกใช้งานแล้ว',
+  'errorPinInvalid': 'ไม่สามารถดำเนินการต่อได้เนื่องจากหมุดไม่ถูกต้องหรือถูกใช้งานแล้ว',
+  'errorAzimuthValue': 'กรุณาใส่ค่า azimuth ที่ถูกต้อง ระหว่าง 0 ถึง 359.99999',
+  'errorEastCoordinate': 'กรุณาใส่ค่าพิกัด East ที่ถูกต้อง',
+  'errorNorthCoordinate': 'กรุณาใส่ค่าพิกัด North ที่ถูกต้อง',
+  'areaCalculationWarning': 'กรุณาเพิ่มพิกัดหมุดอย่างน้อย 3 พิกัด เพื่อการคำนวณพื้นที่',
+  'areaResultPrefix': 'พื้นที่:',
+  'areaUnit': 'ตารางเมตร',
+  'meter': 'เมตร',
+  'longitudeOutOfRange': 'พิกัดลองจิจูดที่ให้มาไม่อยู่ในขอบเขตที่กำหนด (96 ถึง 108).',
+  'minimumTwoCoordinatesAlert': 'กรุณาเพิ่มพิกัดหมุนอย่างน้อย 2 พิกัด เพื่อคำนวณระยะทาง',
+  'noPinData': 'ไม่มีข้อมูลหมุด',
+    'station': 'หมุด',
+    'ha': 'มุมที่รังวัด (° \' ")',
+    'correction2': 'ค่าปรับแก้ (° \' ")',
+    'adjustedHA': 'มุมรังวัดที่ปรับแก้ (° \' ")',
+    'station': 'หมุด',
+    'adjustedHA': 'มุมรังวัดที่ปรับแก้ (°)',
+    'azimuth': 'แอซิมัท (°)',
+    'distanceMeter': 'ระยะทาง (เมตร)',
+    'departure': 'ค่าระยะตะวันออก (เมตร)',
+    'latitude': 'ค่าระยะเหนือ (เมตร)',
+    'correction': 'ค่าปรับแก้',
+    'balanced': 'ค่าปรับสมดุล',
+    'east': 'พิกัดตะวันออก (เมตร)',
+    'north': 'พิกัดเหนือ (เมตร)',
+    'pinCoordinates47': 'พิกัดหมุด',
+    'east47': 'พิกัดตะวันออก (เมตร)',
+    'north47': 'พิกัดเหนือ (เมตร)',
+    'lon47': 'พิกัดลองจิจูด ( ° )',
+    'lat47': 'พิกัดละติจูด ( ° )',
+    'station48': 'หมุดตั้งกล้อง',
+    'object48': 'หมุดที่ส่อง',
+    'horizontalAngleReading48': 'ค่ามุมราบที่รังวัด (° \' ")',
+    'horizontalAngle48': 'ค่ามุมราบ (° \' ")',
+    'averageHorizontalAngle48': 'ค่ามุมราบเฉลี่ย (° \' ")',
+    'horizontalDistanceMeter48': 'ค่าระยะแนวราบ (เมตร)',
+    'manualButton48': 'คู่มือ📖',
+    'fillNForLayer49': 'กรอกค่าปรับแก้สำหรับชั้นงานที่ต้องการ (")',
+    'errorLabel49': 'ค่าผิดพลาดทางมุม  (")',
+    'allowedErrorForLayer49': 'ค่าตามข้อกำหนดชั้นงาน (")',
+    'checkErrorAllowed49': 'ตรวจสอบ',
+    'standard2Button': 'มาตรฐาน',
+  'standardButton': 'มาตรฐาน',
+  }
+};
+
+// ฟังก์ชันสำหรับเปลี่ยนภาษา
+function changeLanguage() {
+  const newLang = document.body.getAttribute('data-lang') === 'th' ? 'en' : 'th';
+  document.body.setAttribute('data-lang', newLang);
+
+  document.querySelectorAll('.lang').forEach(element => {
+    const key = element.getAttribute('data-key');
+    element.textContent = languageData[newLang][key];
+  });
+
+  document.querySelectorAll('.lang-placeholder').forEach(element => {
+    const key = element.getAttribute('data-key');
+    element.placeholder = languageData[newLang][key];
+  });
+  document.querySelectorAll('.lang-unit').forEach(element => {
+  element.textContent = languageData[newLang]['meter'];
+});
+
+
+  // อัพเดทข้อความของผลลัพธ์การคำนวณพื้นที่
+  const resultDisplay = document.getElementById("resultDisplay");
+  const resultKey = resultDisplay.getAttribute('data-key');
+  if (resultKey === 'areaResult' && window.latestAreaCalculationResult !== undefined) {
+    resultDisplay.textContent = `${languageData[newLang]['areaResultPrefix']} ${window.latestAreaCalculationResult} ${languageData[newLang]['areaUnit']}`;
+  } else {
+    resultDisplay.textContent = languageData[newLang][resultKey];
+  }
+
+  updatePinTable(); // อัพเดทตารางทันทีหลังจากเปลี่ยนภาษา
+}
+
+
+// ตั้งค่าภาษาเริ่มต้นของเว็บ
+document.body.setAttribute('data-lang', 'en'); // ภาษาเริ่มต้นเมื่อหน้าเว็บโหลด
+
+document.body.setAttribute('data-lang', 'en'); // ตั้งค่าภาษาเริ่มต้น
+changeLanguage(); // อัพเดทข้อความให้ตรงกับภาษาเริ่มต้น
+// เมื่อหน้าเว็บโหลดเสร็จสิ้น, อัพเดทข้อความตามภาษาเริ่มต้น
+window.onload = function() {
+  changeLanguage(); // หรืออาจต้องการใช้ changeLanguage() โดยไม่มีการสลับภาษา
+};
+
+function showAlert(key) {
+  const lang = document.body.getAttribute('data-lang');
+  alert(languageData[lang][key]);
+}
+
+function showAlert(key) {
+  const lang = document.body.getAttribute('data-lang');
+  alert(languageData[lang][key]);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('[data-action]').forEach(button => {
+    button.addEventListener('click', function() {
+      const actionName = button.getAttribute('data-action');
+      window[actionName]();
+    });
+  });
+
+  // ตรวจสอบและเปลี่ยนภาษาเมื่อโหลดเสร็จ
+  changeLanguage();
+});
+
+function showAlert(key) {
+  const language = document.body.getAttribute('data-lang');
+  const message = languageData[language][key];
+  alert(message);
+}
+
+function goToLink() {
+        window.location.href = "https://docs.google.com/document/d/1og7Bj06gleO_5vTLY_GMaJLibXs3m2Z_tiwb-L08LjY/edit?usp=sharing";
+    }
+
+// คุณอาจต้องมีโค้ดนี้เพื่อตั้งค่า event listener สำหรับปุ่ม
+document.querySelectorAll('.step-btna').forEach(button => {
+  button.addEventListener('click', function() {
+    // Remove active class from all buttons
+    document.querySelectorAll('.step-btna.active').forEach(activeButton => {
+      activeButton.classList.remove('active');
+    });
+    // Add active class to the clicked button
+    this.classList.add('active');
+  });
+});
+    // เลือกปุ่มโดยใช้ ID ของปุ่ม
+    var button = document.getElementById('myButton');
+
+    // เพิ่ม Event Listener เมื่อคลิกที่ปุ่ม
+    button.addEventListener('click', function() {
+        // กำหนด URL ที่ต้องการให้ลิงค์ไป
+        var link = 'https://drive.google.com/file/d/1LSxLdCIqJ84FWlo8QZLp7Ec4tVgb3Tel/view?usp=sharing'; // แก้ตาม URL ที่ต้องการ
+
+        // เปิดลิงค์ในหน้าต่างใหม่
+        window.open(link, '_blank');
+        
+        // หรือถ้าต้องการเปลี่ยน URL ในหน้าเดียวก็ใช้
+        // window.location.href = link;
+    });
+// อัพเดตตัวเลือกใน dropdown menus ตามข้อมูลหมุด (Pins) ที่มีอยู่
+function updateDropdowns() {
+    ['stationSelect', 'object1Select', 'object2Select'].forEach(selectId => {
+        const select = document.getElementById(selectId);
+        let optionsHTML = pins.map(pin => `<option value="${pin}">${pin}</option>`);
+        select.innerHTML = optionsHTML.join('');
+    });
+}
+
+function createSurveyTable() {
+    const station = document.getElementById('stationSelect').value;
+    const object1 = document.getElementById('object1Select').value;
+    const object2 = document.getElementById('object2Select').value;
+
+    if (station === object1 || station === object2 || object1 === object2 || surveyTables.some(table => table.station === station)) {
+        showAlert('errorPinInvalid');
+        return;
+    }
+    surveyTables.push({ station, object1, object2, data: [] });
+    displaySurveyTables();
+    populateTable(); 
+    displayAverageHDTable();
+    updateSwappedAverageHDTable();
+    createFinalHDTable();
+    updateMeasurementTable(station); // ฟังก์ชันใหม่ที่จะเรียกใช้เพื่ออัปเดตขั้นตอนที่ 3
+    updateTableDropdown();
+}
+
+
+function updateMeasurementTable(selectedStation) {
+    // เข้าถึงตารางในขั้นตอนที่ 3 และอัปเดตชื่อสถานี
+    const measurementTable = document.getElementById('measurementTable');
+    if (measurementTable) {
+        // หาแถวที่มี cell ที่เราต้องการเปลี่ยนข้อมูล
+        const rows = measurementTable.rows;
+        for (let i = 0; i < rows.length; i++) {
+            // สมมติว่า cell ที่มีชื่อสถานีอยู่ใน column แรก (index 0)
+            const stationCell = rows[i].cells[0];
+            // ตรวจสอบว่า cell นี้เป็นของแถวที่มีชื่อสถานีหรือไม่
+            if (stationCell && stationCell.textContent.match(/^[ABCD]$/)) {
+                stationCell.textContent = selectedStation; // อัปเดตชื่อสถานี
+                break; // ออกจาก loop หลังจากอัปเดตแถวแรก
+            }
+        }
+    }
+}
+
+function importSurveyTable() {
+    var fileInput = document.getElementById('importFile');
+    var file = fileInput.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {type: 'array'});
+            var sheetName = workbook.SheetNames.find(name => workbook.Sheets[name]['B1'] && workbook.Sheets[name]['B1'].v === 'Object');
+            if (sheetName) {
+                var worksheet = workbook.Sheets[sheetName];
+                var row = 2; // Start from the second row
+                while (worksheet['A' + row]) {
+                    var station = worksheet['A' + row].v;
+                    var object1 = worksheet['B' + row].v;
+                    var object2 = worksheet['B' + (row + 1)].v;
+                    // Call createSurveyTable function for each set of station, object1, and object2
+                    createSurveyTableAutomatically(station, object1, object2);
+                    row += 9; // Jump to the next set of data
+                }
+            } else {
+                alert("Sheet with B1 as 'Object' not found.");
+            }
+            importSurveyTableHAHD();
+        };
+        reader.readAsArrayBuffer(file);
+    } else {
+        showAlert('pleaseSelectFile');
+    }
+}
+
+function createSurveyTableAutomatically(station, object1, object2) {
+    if (station === object1 || station === object2 || object1 === object2 || surveyTables.some(table => table.station === station)) {
+        console.log('Invalid data or station already used.');
+        return;
+    }
+    surveyTables.push({ station, object1, object2, data: [] });
+    displaySurveyTables();
+    populateTable(); 
+    displayAverageHDTable();
+    updateSwappedAverageHDTable();
+    createFinalHDTable();
+    updateMeasurementTable(station);
+    updateTableDropdown();
+    updateTableDropdown();
+}
+
+function importSurveyTableHAHD() {
+    const fileInput = document.getElementById('importFile');
+    const file = fileInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+
+            // หาแผ่นงานที่มี "Object" ที่เซลล์ B1 และทำการดึงข้อมูลจากแผ่นงานทั้งหมดที่ตรงกับเงื่อนไขนี้
+            const targetSheetNames = workbook.SheetNames.filter(name => workbook.Sheets[name]['B1'] && workbook.Sheets[name]['B1'].v === 'Object');
+
+            // วนลูปผ่านแผ่นงานที่พบ
+            targetSheetNames.forEach(targetSheetName => {
+                const worksheet = workbook.Sheets[targetSheetName];
+                let row = 2; // เริ่มจาก A2
+
+                // วนลูปเพื่อดึงข้อมูลจากแถวในแผ่นงาน
+                while (worksheet[`A${row}`]) {
+                    const stationName = worksheet[`A${row}`].v;
+                    const haReadings = [];
+                    const hdValues = [];
+
+                    // ดึงข้อมูล HA reading และ HD จากแผ่นงาน
+                    for (let i = 0; i < 8; i++) {
+                        const haCellRef = `C${row + i}`;
+                        const hdCellRef = `F${row + i}`;
+                        const haReading = worksheet[haCellRef] ? parseHAReading(worksheet[haCellRef].v) : null;
+                        const hdValue = worksheet[hdCellRef] ? worksheet[hdCellRef].v : null;
+
+                        if (haReading) haReadings.push(haReading);
+                        if (hdValue !== null) hdValues.push(hdValue);
+                    }
+
+                    // ทำการอัปเดตข้อมูลในตารางที่เกี่ยวข้อง
+                    updateTablesWithData({ stationName, haReadings, hdValues });
+
+                    row += 9; // ไปยัง station ถัดไป
+                }
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    } else {
+        showAlert('pleaseSelectFile');
+    }
+}
+
+function updateTablesWithData({ stationName, haReadings, hdValues }) {
+    // วนลูปผ่านทุก `surveyTables` เพื่อหาตารางที่มี 'station' ตรงกับ `stationName`
+    surveyTables.forEach((table, index) => {
+        if (table.station === stationName) {
+            // อัปเดต HA readings และ HD values ในตารางที่ตรงกัน
+            haReadings.forEach((reading, readingIndex) => {
+                // อัปเดต HA reading
+                const degreeInput = document.querySelector(`#degrees-${index}-${readingIndex}`);
+                const minuteInput = document.querySelector(`#minutes-${index}-${readingIndex}`);
+                const secondInput = document.querySelector(`#seconds-${index}-${readingIndex}`);
+                degreeInput.value = reading.degrees;
+                minuteInput.value = reading.minutes;
+                secondInput.value = reading.seconds;
+
+                // Trigger the change event manually to invoke calculation
+                [degreeInput, minuteInput, secondInput].forEach(input => {
+                    const event = new Event('change', {
+                        'bubbles': true,
+                        'cancelable': true
+                    });
+                    input.dispatchEvent(event);
+                });
+            });
+
+            hdValues.forEach((value, valueIndex) => {
+                // อัปเดต HD value
+                const hdInput = document.querySelector(`#hd-value-${index}-${valueIndex}`);
+                hdInput.value = value;
+
+                // Trigger the change event for HD input to invoke HD related calculations
+                const event = new Event('change', {
+                    'bubbles': true,
+                    'cancelable': true
+                });
+                hdInput.dispatchEvent(event);
+
+                // Assuming `handleHDInputChange` is the function to be called for each HD input change
+                handleHDInputChange(stationName, value, valueIndex, value);
+            });
+
+            // Assuming these functions exist and need to be called after HD values are updated
+            populateTable();
+            displayAverageHDTable();
+            updateSwappedAverageHDTable();
+            createFinalHDTable();
+        }
+    });
+}
+
+function parseHAReading(reading) {
+    var [degrees, minutes, seconds] = reading.split(/[°'"]/).map(num => parseInt(num, 10));
+    return { degrees, minutes, seconds };
+}
+
+
+function importFirstData1() {
+    var fileInput = document.getElementById('importFile');
+    var file = fileInput.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {type: 'array'});
+            var sheetName = workbook.SheetNames.find(name => workbook.Sheets[name]['C1'] && workbook.Sheets[name]['C1'].v === 'Azimuth');
+            
+            if (sheetName) {
+                var worksheet = workbook.Sheets[sheetName];
+                var stationName = worksheet['A2'] ? worksheet['A2'].v : null;
+                var azimuthValue = worksheet['C3'] ? worksheet['C3'].v : null;
+                var eastValue = worksheet['K3'] ? worksheet['K3'].v : null;
+                var northValue = worksheet['L3'] ? worksheet['L3'].v : null;
+
+                if(stationName && azimuthValue !== null && eastValue !== null && northValue !== null) {
+                    // Update values in the table
+                    document.querySelector(`.azimuthCell[data-station="${stationName}"]`).textContent = azimuthValue;
+                    document.getElementById(`coordinatesEast-${stationName}`).textContent = eastValue;
+                    document.getElementById(`coordinatesNorth-${stationName}`).textContent = northValue;
+                    
+                    // Calculate Departure and Latitude for the pin
+                    calculateDepAndLatForPin(stationName);
+                    
+                    // Call calculateDepAndLatForPin() with the appropriate pin variable
+                    pins.forEach(pin => {
+                        calculateDepAndLatForPin(pin);
+                    });
+
+                    // Calculate Azimuth
+                    calculateAzimuth();
+                } else {
+                    alert("ข้อมูลในไฟล์ Excel ไม่ครบถ้วนหรือไม่ถูกต้อง");
+                }
+            } else {
+                alert("ไม่พบชีทที่มี 'Azimuth' ในเซล C1");
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    } else {
+        alert("กรุณาเลือกไฟล์ก่อน");
+    }
+}
+
+function importFirstData2() {
+    var fileInput = document.getElementById('importFile');
+    var file = fileInput.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {type: 'array'});
+            var sheetName = workbook.SheetNames.find(name => workbook.Sheets[name]['C1'] && workbook.Sheets[name]['C1'].v === 'Azimuth');
+            
+            if (sheetName) {
+                var worksheet = workbook.Sheets[sheetName];
+                var stationName = worksheet['A2'] ? worksheet['A2'].v : null;
+                var azimuthValue = worksheet['C3'] ? worksheet['C3'].v : null;
+                var eastValue = worksheet['K3'] ? worksheet['K3'].v : null;
+                var northValue = worksheet['L3'] ? worksheet['L3'].v : null;
+
+                if(stationName && azimuthValue !== null && eastValue !== null && northValue !== null) {
+                    // Update values in the table
+                    document.getElementById('azimuthValue').value = azimuthValue;
+
+                    document.getElementById(`coordinatesEast-${stationName}`).textContent = eastValue;
+                    document.getElementById(`coordinatesNorth-${stationName}`).textContent = northValue;
+                    
+                    // Calculate Departure and Latitude for the pin
+                    calculateDepAndLatForPin(stationName);
+                    
+                    // Call calculateDepAndLatForPin() with the appropriate pin variable
+                    pins.forEach(pin => {
+                        calculateDepAndLatForPin(pin);
+                    });
+
+                    // Calculate Azimuth
+                    calculateAzimuth();
+                } else {
+                    alert("ข้อมูลในไฟล์ Excel ไม่ครบถ้วนหรือไม่ถูกต้อง");
+                }
+            } else {
+                alert("ไม่พบชีทที่มี 'Azimuth' ในเซล C1");
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    } else {
+        alert("กรุณาเลือกไฟล์ก่อน");
+    }
+   
+}
+
+function displaySurveyTables() {
+    const surveyTablesDiv = document.getElementById('surveyTables');
+    const newTableHTML = createTableHTML(surveyTables[surveyTables.length - 1], surveyTables.length - 1);
+    surveyTablesDiv.insertAdjacentHTML('beforeend', newTableHTML);
+    setupInputListenersForTable(surveyTables.length - 1);
+    populateTable(); 
+}
+
+function createTableHTML(table, index) {
+    let rowsHTML = '';
+    for (let i = 0; i < 8; i++) {
+        let objectToShow = (i % 4 === 0 || i % 4 === 3) ? table.object1 : table.object2;
+        rowsHTML += `
+            <tr>
+                <td>${i % 2 === 0 ? table.station : ''}</td>
+                <td>${objectToShow}</td>
+                <td class="input yellow">
+                    <input type="number" class="degrees" id="degrees-${index}-${i}" placeholder="°" min="0" max="360">
+                    <input type="number" class="minutes" id="minutes-${index}-${i}" placeholder="'" min="0" max="60">
+                    <input type="number" class="seconds" id="seconds-${index}-${i}" placeholder='"' min="0" max="60">
+                </td>
+                <td class="calculation blue" id="ha-${index}-${i}"></td>
+                <td class="average red" id="avg-ha-${index}-${i}"></td>
+                <td>
+                    <input type="number" id="hd-value-${index}-${i}" placeholder="HD Value" onchange="handleHDInputChange('${table.station}', '${objectToShow}', ${i + 1}, this.value)">
+                </td>
+            </tr>`;
+    }
+    return `
+        <table id="surveyTable-${index}">
+            <tr>
+    <th class="lang" data-key="station48">Station</th>
+    <th class="lang" data-key="object48">Object</th>
+    <th class="lang" data-key="horizontalAngleReading48">Horizontal Angle reading (° ' ")</th>
+    <th class="lang" data-key="horizontalAngle48">Horizontal Angle (° ' ")</th>
+    <th class="lang" data-key="averageHorizontalAngle48">Average Horizontal Angle (° ' ")</th>
+    <th class="lang" data-key="horizontalDistanceMeter48">Horizontal Distance (meter)</th>
+</tr>
+            ${rowsHTML}
+        </table>`;
+}
+let HDData = {};
+function handleHDInputChange(station, object, observationNumber, hdValue) {
+    // ตรวจสอบว่า hdValue เป็นตัวเลขหรือไม่
+    const hdNumber = parseFloat(hdValue);
+    if (!isNaN(hdNumber)) {
+        addObservation(station, object, observationNumber, hdNumber);
+        populateTable();
+        displayAverageHDTable();
+        updateSwappedAverageHDTable();
+        createFinalHDTable();
+    }
+}
+function addObservation(station, object, observationNumber, hdValue) {
+    if (!HDData[station]) {
+        HDData[station] = {};
+    }
+    if (!HDData[station][object]) {
+        HDData[station][object] = {};
+    }
+    HDData[station][object][observationNumber] = hdValue;
+    console.log('Added HD Value:', hdValue);
+}
+function populateTable() {
+    const table = document.getElementById('hdDataTable');
+    // ล้างข้อมูลเก่าออกจากตารางก่อนแสดงผลข้อมูลใหม่
+    table.innerHTML = `
+      <tr>
+        <th>Station</th>
+        <th>Object</th>
+        <th>Observation Number</th>
+        <th>HD Value</th>
+      </tr>`;
+
+    for (const station in HDData) {
+        for (const object in HDData[station]) {
+            for (const observation in HDData[station][object]) {
+                const row = table.insertRow();
+                row.innerHTML = `
+                  <td>${station}</td>
+                  <td>${object}</td>
+                  <td>${observation}</td>
+                  <td>${HDData[station][object][observation]}</td>
+                `;
+            }
+        }
+    }
+}
+
+// ฟังก์ชันสำหรับคำนวณค่าเฉลี่ยของ HD ตาม station และ object
+function calculateAverageHD(station, object) {
+  let sum = 0;
+  let count = 0;
+
+  // ตรวจสอบว่ามีข้อมูลสำหรับ station และ object ที่ระบุ
+  if (HDData[station] && HDData[station][object]) {
+    for (let obs in HDData[station][object]) {
+      sum += HDData[station][object][obs];
+      count++;
+    }
+  }
+
+  // ถ้ามีการสังเกตอย่างน้อยหนึ่งครั้ง คำนวณค่าเฉลี่ย
+  if (count > 0) {
+    return sum / count;
+  } else {
+    return null; // หรือจะ return 0 หรือค่าอื่นตามที่ต้องการ
+  }
+}
+
+// ฟังก์ชันสำหรับแสดงค่าเฉลี่ย HD ในตาราง HD Table
+function displayAverageHDTable() {
+  const averageHDTable = document.getElementById('averageHDDataTable');
+  const uniqueStations = [...new Set(pins)]; // หา station ที่ไม่ซ้ำกัน
+
+  averageHDTable.innerHTML = `
+    <tr>
+      <th>Station</th>
+      <th>Object</th>
+      <th>Average HD</th>
+    </tr>`;
+
+  uniqueStations.forEach(station => {
+    uniqueStations.forEach(object => {
+      if (station !== object) {
+        const averageHD = calculateAverageHD(station, object);
+        if (averageHD !== null) {
+          const row = averageHDTable.insertRow();
+          row.innerHTML = `
+            <td>${station}</td>
+            <td>${object}</td>
+            <td>${averageHD.toFixed(2)}</td>
+          `;
+        }
+      }
+    });
+  });
+}
+
+// ฟังก์ชันสำหรับแสดงค่า HD ในตาราง HD Table
+function displayHDData() {
+  const hdTable = document.getElementById('hdDataTable');
+  hdTable.classList.remove('hidden'); // ลบ class 'hidden' เพื่อแสดงตาราง HD
+}
+
+function calculateSwappedAverageHD(station1, object1, station2, object2) {
+  let avgHD1 = calculateAverageHD(station1, object1);
+  let avgHD2 = calculateAverageHD(station2, object2);
+
+  if (avgHD1 != null && avgHD2 != null) {
+    return (avgHD1 + avgHD2) / 2;
+  } else {
+    return null;
+  }
+}
+
+
+function updateSwappedAverageHDTable() {
+  const table = document.getElementById('swappedAverageHDTable');
+  table.innerHTML = `
+    <tr>
+      <th>Station 1</th>
+      <th>Object 1</th>
+      <th>Station 2</th>
+      <th>Object 2</th>
+      <th>Swapped Average HD</th>
+    </tr>
+  `;
+
+  // สร้าง Set สำหรับตรวจสอบคู่ที่ถูกเพิ่มแล้ว
+  let addedPairs = new Set();
+
+  for (let i = 0; i < pins.length; i++) {
+    for (let j = 0; j < pins.length; j++) {
+      if (i !== j && !addedPairs.has(`${pins[j]}-${pins[i]}`)) {
+        const swappedAvgHD = calculateSwappedAverageHD(pins[i], pins[j], pins[j], pins[i]);
+        if (swappedAvgHD != null) {
+          const newRow = table.insertRow();
+          newRow.innerHTML = `
+            <td>${pins[i]}</td>
+            <td>${pins[j]}</td>
+            <td>${pins[j]}</td>
+            <td>${pins[i]}</td>
+            <td>${swappedAvgHD.toFixed(2)}</td>
+          `;
+          // บันทึกคู่ที่ถูกเพิ่มแล้วเข้า Set
+          addedPairs.add(`${pins[i]}-${pins[j]}`);
+        }
+      }
+    }
+  }
+}
+
+function createFinalHDTable() {
+  const swappedTable = document.getElementById('swappedAverageHDTable');
+  const finalTable = document.getElementById('finalHDTable');
+
+  // Clear the final HD table before adding new data
+  finalTable.innerHTML = `
+    <tr>
+      <th>Station</th>
+      <th>Distance</th>
+    </tr>
+  `;
+
+  // Initialize an empty object to keep track of distances
+  let distances = {};
+
+  // Loop through each row in the SwappedAverageHD table
+  for (let rowIndex = 1; rowIndex < swappedTable.rows.length; rowIndex++) {
+    const row = swappedTable.rows[rowIndex];
+    const station1 = row.cells[0].textContent.trim();
+    const station2 = row.cells[2].textContent.trim();
+    const distance = parseFloat(row.cells[4].textContent.trim());
+
+    // Add distance from station1 to station2
+    distances[`${station1}-${station2}`] = distance;
+
+    // Add distance from station2 to station1 (for the reverse direction)
+    distances[`${station2}-${station1}`] = distance;
+  }
+
+  // Create rows for the final HD table using the distances object
+  for (const [key, value] of Object.entries(distances)) {
+    const newRow = finalTable.insertRow();
+    const [station1, station2] = key.split('-');
+    newRow.innerHTML = `
+      <td>ระยะทางระหว่างหมุด${station1}และ${station2}</td>
+      <td>${value}</td>
+    `;
+  }
+
+  // Now, we can create the Deplat table with updated distances
+  createDeplatTable();
+}
+
+//แจ้งเตือนเมื่อมีค่ามุมที่เกินกำหนด
+function setupInputListenersForTable(tableIndex) {
+    const newTable = document.getElementById(`surveyTable-${tableIndex}`);
+    newTable.querySelectorAll('.input.yellow input').forEach(input => {
+        input.addEventListener('change', event => {
+            handleInputChange(event, tableIndex);
+            validateInput(event.target.id, event.target.className.includes('degrees') ? 360 : 60);
+        });
+    });
+}
+function handleInputChange(event, index) {
+    const inputIdParts = event.target.id.split('-');
+    const row = parseInt(inputIdParts[2]);
+
+    if (row % 2 !== 0) { // If the row is odd
+        const firstInputSuffix = row - 1; // The preceding even row
+        const secondInputSuffix = row; // The current odd row
+
+        // Call calculateAndDisplayHA with the appropriate indices
+        calculateAndDisplayHA(index, firstInputSuffix, secondInputSuffix);
+    } else {
+        // Handle even rows as before
+        calculateHA(index, row);
+    }
+
+    // Common post-calculation tasks
+    calculateInnerAngle();
+    calculateSumHAFromAllColumns();
+}
+
+function calculateHA(tableIndex, row) {
+    // Assuming each table has 8 rows and calculations are done between adjacent rows
+    if (row % 2 === 0) { // Only calculate when even row index
+        calculateAndDisplayHA(tableIndex, row, parseInt(row) + 1);
+    }
+}
+
+function calculateAndDisplayHA(index, firstInputSuffix, secondInputSuffix) {
+    // Retrieve values from input fields for the first and second angle
+    const degrees1 = parseInt(document.getElementById(`degrees-${index}-${firstInputSuffix}`).value) || 0;
+    const minutes1 = parseInt(document.getElementById(`minutes-${index}-${firstInputSuffix}`).value) || 0;
+    const seconds1 = parseInt(document.getElementById(`seconds-${index}-${firstInputSuffix}`).value) || 0;
+
+    const degrees2 = parseInt(document.getElementById(`degrees-${index}-${secondInputSuffix}`).value) || 0;
+    const minutes2 = parseInt(document.getElementById(`minutes-${index}-${secondInputSuffix}`).value) || 0;
+    const seconds2 = parseInt(document.getElementById(`seconds-${index}-${secondInputSuffix}`).value) || 0;
+
+    // Convert angles to total seconds for easy calculation
+    const totalSeconds1 = degrees1 * 3600 + minutes1 * 60 + seconds1;
+    const totalSeconds2 = degrees2 * 3600 + minutes2 * 60 + seconds2;
+
+    // Determine the difference in seconds based on the suffix and check if result is negative
+    let differenceInSeconds;
+    if ((firstInputSuffix % 4 === 0) || (firstInputSuffix % 4 === 3)) { // For the 1st and 3rd pair: second - first
+        if (totalSeconds2 - totalSeconds1 < 0) {
+            differenceInSeconds = (totalSeconds2 + 360 * 3600) - totalSeconds1;
+        } else {
+            differenceInSeconds = totalSeconds2 - totalSeconds1;
+        }
+    } else { // For the 2nd and 4th pair: first - second
+        if (totalSeconds1 - totalSeconds2 < 0) {
+            differenceInSeconds = (totalSeconds1 + 360 * 3600) - totalSeconds2;
+        } else {
+            differenceInSeconds = totalSeconds1 - totalSeconds2;
+        }
+    }
+
+    // Convert the difference back to degrees, minutes, and seconds
+    const diffDegrees = Math.floor(Math.abs(differenceInSeconds) / 3600);
+    const diffMinutes = Math.floor((Math.abs(differenceInSeconds) % 3600) / 60);
+    const diffSeconds = Math.abs(differenceInSeconds) % 60;
+
+    // Update the HA cell with the result
+    const resultElement = document.getElementById(`ha-${index}-${firstInputSuffix}`);
+    if (resultElement) {
+        resultElement.textContent = `${diffDegrees}° ${diffMinutes}' ${diffSeconds}"`;
+    }
+    calculateAndDisplayAverageHA(index);
+}
+
+// หาค่าเฉลี่ย
+// คำนวณและแสดงค่าเฉลี่ย HA โดยสรุปค่าจาก HA elements ที่มีและปรับปรุง Avg HA cell ในตาราง
+function calculateAndDisplayAverageHA(index) {
+  let sumOfSeconds = 0;
+  let numberOfAngles = 0;
+
+  // Loop over the HA elements to sum their values in seconds
+  for (let i = 0; i <= 7; i += 2) { // Assuming you only have even HA elements i.e., 0, 2, 4, 6
+    const haElement = document.getElementById(`ha-${index}-${i}`);
+    if (haElement && haElement.textContent) {
+      console.log(`HA Element ID: ha-${index}-${i} Value: ${haElement.textContent}`); // Logging for debugging
+      const [degrees, minutes, seconds] = haElement.textContent.trim().split(/[°'"]/).map(num => parseInt(num) || 0);
+      sumOfSeconds += degrees * 3600 + minutes * 60 + seconds;
+      numberOfAngles++;
+      
+    }
+  }
+
+  if (numberOfAngles === 0) return; // Prevent division by zero if no angles are present
+
+  // Calculate the average in seconds
+  const averageSeconds = sumOfSeconds / numberOfAngles;
+
+  // Convert the average back to degrees, minutes, and seconds
+  const avgDegrees = Math.floor(averageSeconds / 3600);
+  const avgMinutes = Math.floor((averageSeconds % 3600) / 60);
+  const avgSeconds = Math.floor(averageSeconds % 60);
+
+  // Update the Avg HA cell with the result
+  const avgHaElement = document.getElementById(`avg-ha-${index}-0`);
+    if (avgHaElement) {
+        avgHaElement.textContent = `${avgDegrees}° ${avgMinutes}' ${avgSeconds}"`;
+        
+        // Now update the HA values in Step 3
+        setAvgHAValueInTable(index);
+  }
+}
+// กำหนดค่า HA เฉลี่ยในตาราง Step 3 หลังจากคำนวณ
+function setAvgHAValueInTable(index) {
+    // Fetch the avgHA value from the element with ID 'avg-ha-${index}-0'
+    const avgHAElement = document.getElementById(`avg-ha-${index}-0`);
+    const avgHAValue = avgHAElement ? avgHAElement.textContent : 'N/A';
+
+    // Assuming Step 3 table has a similar ID setup as the survey tables
+    // Update the corresponding HA cell in the Step 3 table
+    const step3HaCell = document.getElementById(`step3-ha-${index}`);
+    if (step3HaCell) {
+        step3HaCell.textContent = avgHAValue;
+    }
+}
+// ตรวจสอบค่าที่ป้อนเข้ามาให้ไม่เกินค่าสูงสุดที่กำหนด
+function validateInput(id, max) {
+    let input = document.getElementById(id);
+    if (input && parseInt(input.value) > max) {
+        alert('โปรดระบุค่าให้ถูกต้อง, ' + id.split('-')[0] + ' ห้ามเกิน ' + max);
+        input.value = '';
+        input.focus();
+    }
+}
+
+        // การคำนวนสิ้นสุด
+
+
+//STEP 3
+// บันทึกข้อมูลการสำรวจสำหรับตารางที่กำหนด
+function saveSurveyData(tableIndex) {
+            // Implement saving of survey data for the specified table
+            alert('Survey data saved for table ' + (tableIndex + 1));
+        }
+
+// สร้างตารางแสดงผลการวัด // สร้างตารางการวัดค่าตามข้อมูลหมุด (Pins) ที่มีอยู่
+function createMeasurementTable() {
+    const table = document.getElementById('measurementTable');
+    let tableHTML = `<tr><th class="lang" data-key="station">Station</th><th class="lang" data-key="ha">Horizontal Angle (&deg; &apos; &quot;)</th><th class="lang" data-key="correction2">Correction (&deg; &apos; &quot;)</th><th class="lang" data-key="adjustedHA">Adjusted Horizontal Angle (&deg; &apos; &quot;)</th></tr>`;
+    pins.forEach((pin, index) => {
+        tableHTML += `<tr><td>${pin}</td><td id="step3-ha-${index}" class="AvgHa"></td><td class="corrAngle"></td><td class="adjHA"></td></tr>`;
+    });
+
+    if (pins.length === 0) {
+        tableHTML += `<tr><td colspan="4" class="lang" data-key="noPinData"></td></tr>`;
+    }
+
+    tableHTML += `<tr><td>SUM</td><td class="sumHA"></td><td class="sumCorrectionAngle"></td><td class="sumAdjHa"></td></tr>`;
+    tableHTML += `<tr><td>180*(n-2)</td><td class="innerangle"></td></tr>`;
+    tableHTML += `<tr><td>ERROR</td><td id="errorangle"></td></tr>`;
+
+    table.innerHTML = tableHTML;
+}
+        //ผลรวมSTEP 3 // แปลงค่าจาก DMS เป็น Decimal
+    function dmsToDecimal(degrees, minutes, seconds) {
+    // Check if the overall value should be negative based on degrees and minutes
+    const sign = degrees < 0 || minutes < 0 ? -1 : 1;
+    degrees = Math.abs(degrees);
+    minutes = Math.abs(minutes);
+    return sign * (degrees + minutes / 60 + seconds / 3600);
+}
+// แปลงค่าจาก Decimal เป็น DMS
+function decimalToDMS(decimal) {
+    const degrees = Math.floor(decimal);
+    const minutes = Math.floor((decimal - degrees) * 60);
+    const seconds = Math.round(((decimal - degrees) * 60 - minutes) * 60);
+    return `${degrees}° ${minutes}' ${seconds}"`;
+}
+
+// ฟังก์ชันสำหรับคำนวณผลรวม HA // คำนวณผลรวม HA จากทุก columns และอัพเดตในตาราง // คำนวณผลรวมของ HA จากทุกคอลัมน์และอัพเดตผลลัพธ์
+function calculateSumHAFromAllColumns() {
+    let totalDegrees = 0;
+    let totalMinutes = 0;
+    let totalSeconds = 0;
+
+    const haElements = document.querySelectorAll('.AvgHa');
+    haElements.forEach(el => {
+        const parts = el.textContent.trim().match(/(\d+)° (\d+)' (\d+)"/);
+        if (parts) {
+            const [_, deg, min, sec] = parts.map(Number);
+            totalSeconds += sec;
+            totalMinutes += min;
+            totalDegrees += deg;
+        }
+    });
+
+    // Normalize the seconds to minutes, and minutes to degrees
+    totalMinutes += Math.floor(totalSeconds / 60);
+    totalSeconds %= 60;
+    totalDegrees += Math.floor(totalMinutes / 60);
+    totalMinutes %= 60;
+
+    // No need to normalize degrees to modulo 360, we want to keep the full sum
+
+    const sumHAElement = document.querySelector('.sumHA');
+    if (sumHAElement) {
+        sumHAElement.textContent = `${totalDegrees}° ${totalMinutes}' ${totalSeconds}"`;
+    }
+    calculateInnerAngle();
+}
+
+//ผลรวมมุมภายใน // คำนวณมุมภายในและอัพเดตในตาราง
+function calculateInnerAngle() {
+    const numberOfPins = pins.length;
+    const innerangleDegrees = 180 * (numberOfPins - 2);
+
+    // Convert the inner angle to DMS format
+    const innerangleDMS = convertToDMS(innerangleDegrees);
+
+    // Display the inner angle in DMS format
+    const innerangleElement = document.querySelector('.innerangle');
+    if (innerangleElement) {
+        innerangleElement.textContent = innerangleDMS;
+    }
+    calculateErrorAngle();
+}
+// แปลงค่าจาก Degrees เป็น DMS
+function convertToDMS(degrees) {
+    const d = Math.floor(degrees);
+    const minfloat = (degrees - d) * 60;
+    const m = Math.floor(minfloat);
+    const s = Math.round((minfloat - m) * 60);
+    return `${d}° ${m}' ${s}"`;
+}
+//ค่า Error ที่ได้ // คำนวณค่า Error Angle และอัพเดตในตาราง
+function calculateErrorAngle() {
+    const sumHAElement = document.querySelector('.sumHA');
+    if (!sumHAElement) return;
+
+    const sumHAParts = sumHAElement.textContent.trim().match(/(\d+)° (\d+)' (\d+)"/);
+    if (!sumHAParts) return;
+
+    const [_, totalDegrees, totalMinutes, totalSeconds] = sumHAParts.map(Number);
+
+    const numberOfPins = pins.length;
+    const innerangleDegrees = 180 * (numberOfPins - 2);
+    const innerangleTotalSeconds = innerangleDegrees * 3600;
+    const sumHATotalSeconds = totalDegrees * 3600 + totalMinutes * 60 + totalSeconds;
+    const errorInSeconds = sumHATotalSeconds - innerangleTotalSeconds;
+
+    const errorAngleElement = document.getElementById('errorangle');
+    if (errorAngleElement) {
+        errorAngleElement.textContent = convertSecondsToDMS(errorInSeconds);
+    }
+    calculateAverageErrorAngle();
+}
+let errorSign;
+//คำนวนค่า correction angle ออกมา // คำนวณค่า Correction Angle เฉลี่ยและอัพเดตในตาราง
+function calculateAverageErrorAngle() {
+    const errorAngleElement = document.getElementById('errorangle');
+    if (!errorAngleElement) return;
+
+    // Extract the error angle parts, with sign included
+    const errorDMS = errorAngleElement.textContent.trim();
+    const errorSign = errorDMS.startsWith('-') ? -1 : 1;
+    const [errorDegrees, errorMinutes, errorSeconds] = errorDMS.replace('-', '').split(/[°'"]/).map(num => parseFloat(num) || 0);
+    const errorTotalSeconds = (errorDegrees * 3600) + (errorMinutes * 60) + errorSeconds;
+
+    // Convert the error angle to decimal degrees while preserving the sign
+    const errorDecimalDegrees = errorSign * (errorTotalSeconds / 3600);
+
+    // Now, determine the sign for the correction angle based on the sign of the error angle
+    const correctionSign = errorDecimalDegrees >= 0 ? -1 : 1;
+
+    // Calculate the average correction angle in seconds, applying the determined sign
+    const averageCorrectionSeconds = correctionSign * Math.abs(errorTotalSeconds / pins.length);
+
+    // Convert the average correction angle back to DMS format
+    const averageCorrectionDMS = convertSecondsToDMS(averageCorrectionSeconds);
+
+    // Update the correction for each pin
+    const correctionElements = document.querySelectorAll('.corrAngle');
+    correctionElements.forEach(el => {
+        el.textContent = averageCorrectionDMS || '0° 0\' 0"';
+    });
+
+    AdjustHA(); // ปรับค่า Adjusted HA
+    sumCorr();
+    updateTableCalculations();
+}
+
+// หลังจากอัปเดตค่า Correction ให้ทำการอัปเดตค่า Adjusted HA และผลรวมของ Adjusted HA
+//คำนวนค่า sumCorr // คำนวณผลรวมของ Correction Angle
+function sumCorr() {
+    let totalCorrSeconds = 0;
+
+    // Loop through each correction cell and sum the seconds, preserving the sign
+    document.querySelectorAll('.corrAngle').forEach(cell => {
+        const dms = cell.textContent.trim();
+        // Check if the correction is negative
+        const isNegative = dms.startsWith('-');
+        const seconds = dmsToSeconds(dms);
+        // If the correction is negative, subtract it from the total, otherwise add it
+        totalCorrSeconds += isNegative ? -seconds : seconds;
+    });
+
+    // Convert the total seconds to DMS, the function will handle the sign
+    const sumDMS = convertSecondsToDMS(totalCorrSeconds);
+    const sumCorrCell = document.querySelector('.sumCorrectionAngle');
+    if (sumCorrCell) {
+        sumCorrCell.textContent = sumDMS;
+    }
+}
+
+function dmsToSeconds(dms) {
+    const parts = dms.match(/(-?\d+)° (\d+)' (\d+\.?\d*)"/);
+    if (!parts) return 0;
+
+    const [_, deg, min, sec] = parts.map(Number);
+    // Calculate the total seconds considering the sign
+    return deg * 3600 + min * 60 + sec;
+}
+
+function newConvertSecondsToDMS(totalSeconds) {
+    // This function will be called with a positive number, so no need to handle negative values here
+    const degrees = Math.floor(totalSeconds / 3600);
+    totalSeconds %= 3600;
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = (totalSeconds % 60).toFixed(2);
+
+    return `${degrees}° ${minutes}' ${seconds}"`;
+}
+//หาค่า adjHa // ปรับค่า Adjusted HA และอัพเดตในตาราง
+function AdjustHA() {
+    // Retrieve the sign from the error angle calculated in calculateAverageErrorAngle
+    const errorAngleElement = document.getElementById('errorangle');
+    if (!errorAngleElement) return;
+
+    const errorDMS = errorAngleElement.textContent.trim();
+    const errorSign = errorDMS.startsWith('-') ? -1 : 1; // Will be -1 if error is negative, 1 if positive
+
+    // Determine the average correction in seconds
+    const correctionElements = document.querySelectorAll('.corrAngle');
+    const averageCorrectionSeconds = Array.from(correctionElements).reduce((acc, el) => {
+        const [corrDegrees, corrMinutes, corrSeconds] = el.textContent.trim().split(/[°'"]/).map(num => parseFloat(num) || 0);
+        return acc + ((corrDegrees * 3600) + (corrMinutes * 60) + corrSeconds);
+    }, 0) / correctionElements.length;
+
+    // Apply the average correction to each HA value
+    const haElements = document.querySelectorAll('.AvgHa');
+    haElements.forEach((haElement, index) => {
+        const [haDegrees, haMinutes, haSeconds] = haElement.textContent.trim().split(/[°'"]/).map(num => parseFloat(num) || 0);
+        const haTotalSeconds = (haDegrees * 3600) + (haMinutes * 60) + haSeconds;
+
+        // Apply the correction based on the sign of the error
+        const adjustedTotalSeconds = errorSign === 1 ? haTotalSeconds - averageCorrectionSeconds : haTotalSeconds + averageCorrectionSeconds;
+
+        // Convert the total seconds back to DMS
+        const adjustedHADMS = convertSecondsToDMS(adjustedTotalSeconds);
+
+        // Update the Adjusted HA cell in the table
+        const adjHaCell = document.querySelectorAll('.adjHA')[index];
+        if (adjHaCell) {
+            adjHaCell.textContent = adjustedHADMS;
+        }
+    });
+
+    // Call this function to update the sum of Adjusted HA if needed
+    sumAdjHA();
+}
+function addDMS(dms1, dms2) {
+    // Convert both DMS values to seconds
+    const seconds1 = dms1[0] * 3600 + dms1[1] * 60 + dms1[2];
+    const seconds2 = dms2[0] * 3600 + dms2[1] * 60 + dms2[2];
+
+    // Add the values
+    const totalSeconds = seconds1 + seconds2;
+
+    // Convert back to degrees, minutes, seconds
+    const degrees = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return [degrees, minutes, seconds];
+}
+
+//ฟังก์ชัน subtractDMS ใหม่นี้จะดำเนินการลบค่า Correction ออกจาก HA และจะคำนวนให้ Adjusted HA มีค่าในช่วงที่ถูกต้อง โดยการแปลงค่าเป็นวินาทีและทำการคำนวน จากนั้นแปลงกลับไปเป็น DMS
+function subtractDMS(ha, corr) {
+    // Convert HA and Correction to seconds
+    const haSeconds = ha[0] * 3600 + ha[1] * 60 + ha[2];
+    const corrSeconds = corr[0] * 3600 + corr[1] * 60 + corr[2];
+
+    // Subtract Correction seconds from HA seconds
+    let adjustedSeconds = haSeconds - corrSeconds;
+
+    // Normalize the adjusted HA seconds to be within the range 0 - 359° 59' 59"
+    while (adjustedSeconds < 0) {
+        adjustedSeconds += 360 * 3600;
+    }
+
+    // Convert back to degrees, minutes, seconds
+    const adjustedDegrees = Math.floor(adjustedSeconds / 3600);
+    const adjustedMinutes = Math.floor((adjustedSeconds % 3600) / 60);
+    const adjustedSecs = adjustedSeconds % 60;
+
+    return [adjustedDegrees, adjustedMinutes, adjustedSecs];
+}
+
+function formatDMS(dms) {
+    const [degrees, minutes, seconds] = dms;
+    return `${degrees}° ${Math.abs(minutes)}' ${Math.abs(seconds)}"`;
+}
+
+//หาค่า sumadjHA // คำนวณผลรวมของ Adjusted HA และอัพเดตในตาราง
+function sumAdjHA() {
+    let totalAdjHADegrees = 0; // เปลี่ยนจาก seconds เป็น degrees สำหรับความชัดเจน
+
+    // Loop through each row in the measurement table
+    const rows = document.querySelectorAll('#measurementTable tr');
+    rows.forEach((row, index) => {
+        if (index > 0 && index < rows.length - 3) { // Skip header, footer, and total rows
+            const adjHaElement = row.querySelector('.adjHA');
+            if (adjHaElement && adjHaElement.textContent !== 'NaN° NaN\' NaN"') { // Check if the content is valid
+                const adjHa = dmsToDecimal(...adjHaElement.textContent.trim().split(/[°'"]/).map(num => parseFloat(num) || 0));
+                // Sum the values directly in degrees
+                totalAdjHADegrees += adjHa;
+            }
+        }
+    });
+
+    // Convert the total adjusted HA in degrees back to DMS format
+    const totalAdjHADMS = convertDecimalToDMS(totalAdjHADegrees); // ฟังก์ชันนี้จะต้องเขียนใหม่เพื่อรองรับการแปลงจาก degrees เป็น DMS
+
+    // Update the sumAdjHa element in the table
+    const sumAdjHaElement = document.querySelector('.sumAdjHa');
+    if (sumAdjHaElement) {
+        sumAdjHaElement.textContent = totalAdjHADMS;
+    }
+
+    createDeplatTable(); // Call the function to create the deplat table
+}
+
+// ฟังก์ชันเพื่อแปลงค่าจาก decimal degrees ไปเป็น DMS format
+function convertDecimalToDMS(degrees) {
+    const deg = Math.floor(degrees);
+    const minFloat = (degrees - deg) * 60;
+    const min = Math.floor(minFloat);
+    const sec = ((minFloat - min) * 60).toFixed(2);
+
+    // Return the DMS format, but ensure that degrees can go beyond 360
+    return `${deg}° ${min}' ${sec}"`;
+}
+// สร้างตารางแสดงผลการปรับแต่งพิกัด // สร้างตารางสำหรับแสดงผลลัพธ์ของการวัด Departure และ Latitude
+function createDeplatTable() {
+    let totalDeparture = 0;
+    let totalLatitude = 0;
+    let distances = getDistancesFromFinalHDTable();
+    let tableHTML = `<table>
+        <tr>
+  <th rowspan="2" class="lang" data-key="station">Station</th>
+  <th rowspan="2" class="lang" data-key="adjustedHA">Adjusted HA (°)</th>
+  <th rowspan="2" class="lang" data-key="azimuth">Azimuth (°)</th>
+  <th rowspan="2" class="lang" data-key="distanceMeter">Distance (meter)</th>
+  <th rowspan="2" class="lang" data-key="departure">Departure (meter)</th>
+  <th rowspan="2" class="lang" data-key="latitude">Latitude (meter)</th>
+  <th colspan="2" class="lang" data-key="correction">Correction</th>
+  <th colspan="2" class="lang" data-key="balanced">Balanced</th>
+  <th rowspan="2" class="lang" data-key="east">Easting (meter)</th>
+  <th rowspan="2" class="lang" data-key="north">Northing (meter)</th>
+</tr>
+<tr>
+  <th class="lang" data-key="departure">Departure (meter)</th>
+  <th class="lang" data-key="latitude">Latitude (meter)</th>
+  <th class="lang" data-key="departure">Departure (meter)</th>
+  <th class="lang" data-key="latitude">Latitude (meter)</th>
+</tr>`;
+
+    // Loop through each pin
+    pins.forEach((pin, index) => {
+        // สร้างคีย์สำหรับระยะทางระหว่างหมุดปัจจุบันและหมุดถัดไป
+        let nextPin = index < pins.length - 1 ? pins[index + 1] : pins[0];
+        let distanceKey = `${pin}-${nextPin}`;
+        let distanceValue = distances[distanceKey];
+        // ตรวจสอบว่ามีข้อมูลระยะทางหรือไม่และตั้งค่าที่จะแสดง
+        let distanceDisplay = distanceValue || "ไม่มีข้อมูลdistance";
+        
+     const adjustedHADecimal = getAdjustedHADecimalFromStep3(pin); // Get Adjusted HA in decimal format
+    let isEditable = index === 0; // Check if it is the first row
+        tableHTML += `<tr>
+                        <td>${pin}</td>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        </tr>
+                        <tr>
+                        <td></td>  
+                        <td class="adjHA" data-station="${pin}">${adjustedHADecimal}</td>
+                        <td class="azimuthCell" data-station="${pin}"></td>
+                        <td><input type="number" id="distance-input-${pin}" class="distanceInput" value="${distanceDisplay}" onchange="calculateDepAndLatForPin('${pin}')"></td>
+                        <td id="Departure-${pin}" class="departureCell"></td>
+                        <td id="Latitude-${pin}" class="latitudeCell"></td>
+                        <td id="Correction-Departure-${pin}" class="Correction-departureCell"></td>
+                        <td id="Correction-Latitude-${pin}" class="Correction-latitudeCell"></td>
+                        <td id="Balanced-Departure-${pin}" class="Balanced-departureCell"></td>
+                        <td id="Balanced-Latitude-${pin}" class="Balanced-latitudeCell"></td>
+                        <td id="coordinatesEast-${pin}" class="coordinatesEast"></td>
+                        <td id="coordinatesNorth-${pin}" class="coordinatesNorth"></td>
+                      </tr>
+                      `;
+                      if (distanceValue) {
+            document.getElementById(`distance-input-${pin}`).value = distanceDisplay;
+        } else {
+            console.log(`Station ${pin}: ไม่มีข้อมูลdistance`);
+        }
+        // Initialize the totalDeparture and totalLatitude with values from each row if needed
+    });
+     // หากต้องการเพิ่มหมุดแรกหลังจากหมุดสุดท้ายในตาราง
+     const firstPin = pins[0];
+    const lastPin = pins[pins.length - 1];
+    let lastDistanceKey = `${lastPin}-${firstPin}`;
+    let lastDistanceValue = distances[lastDistanceKey];
+    let lastDistanceDisplay = lastDistanceValue || "ไม่มีข้อมูลdistance";
+    tableHTML += `<tr>
+                    <td>${firstPin}</td>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                  </tr>`;
+    // Add the row for the totals
+    tableHTML +=  `<tr>
+                    <td colspan="3">Total</td>
+                    <td id="totalDistance"></td>
+                    <td id="totalDeparture"></td>
+                    <td id="totalLatitude"></td>
+                    <td id="totalCorrectionDeparture"></td>
+                    <td id="totalCorrectionLatitude"></td>
+                    <td id="totalBalancedDeparture"></td>
+                    <td id="totalBalancedLatitude"></td>
+                  </tr>`;
+
+    // Close the table tag
+    tableHTML += `</table>`;
+
+    // Inject the table into the 'deplatTable' div
+    const deplatTableDiv = document.getElementById('deplatTable');
+    if (deplatTableDiv) {
+        deplatTableDiv.innerHTML = tableHTML;
+    }
+
+    // Now you need to setup event listeners or call functions that will fill in the Departure and Latitude cells
+    // and calculate the totals to update the #totalDeparture and #totalLatitude cells
+    setupAzimuthCalculation();
+    setupDistanceCalculation();
+    // Call functions to calculate initial totals if needed
+}
+// คำนวณระยะทางจากตารางขั้นสุดท้ายและอัพเดตในตาราง // ดึงข้อมูลระยะทางจากตารางสุดท้ายและอัพเดตข้อมูล
+function getDistancesFromFinalHDTable() {
+  let distances = {};
+  let hasData = false; // เพิ่มตัวแปรเพื่อตรวจสอบว่ามีข้อมูลระยะทางหรือไม่
+  const finalTable = document.getElementById('finalHDTable');
+
+  // ข้ามแถวแรก (หัวข้อตาราง) โดยเริ่มจาก index 1
+  for (let rowIndex = 1; rowIndex < finalTable.rows.length; rowIndex++) {
+    const row = finalTable.rows[rowIndex];
+    const stationPair = row.cells[0].textContent.trim();
+    const distance = row.cells[1].textContent.trim();
+
+    // ลบข้อความ 'ระยะทางระหว่างหมุด' และเก็บค่าระยะทางในอ็อบเจกต์ distances
+    const stationNames = stationPair.replace('ระยะทางระหว่างหมุด', '').split('และ');
+    if (stationNames.length === 2 && distance) {
+      const key = stationNames[0].trim() + '-' + stationNames[1].trim();
+      distances[key] = parseFloat(distance);
+      hasData = true; // อัปเดตตัวแปร hasData เมื่อพบข้อมูลระยะทาง
+    }
+  }
+  if (!hasData) {
+    // ถ้าไม่พบข้อมูลระยะทาง ให้แสดงข้อความใน console.log
+    console.log("ไม่มีข้อมูล distance");
+  }
+  return distances;
+}
+// ตั้งค่า Event Listeners
+function setupEventListeners() {
+    document.getElementById('addEastButton').addEventListener('click', addCoordinateEast);
+    document.getElementById('addNorthButton').addEventListener('click', addCoordinateNorth);
+}
+
+// กำหนดค่า azimuth และคำนวณใหม่สำหรับทุกหมุด
+function addAzimuth() {
+    // Get the new azimuth value from the input field
+    var newAzimuthValue = parseFloat(document.getElementById('azimuthValue').value);
+
+    // Check if the value is a number and within the valid range
+    if (!isNaN(newAzimuthValue) && newAzimuthValue >= 0 && newAzimuthValue < 360) {
+        // Select the first azimuth cell in the table
+        var firstAzimuthCell = document.querySelector('#deplatTable .azimuthCell');
+
+        // If the cell exists, update its content with the new value
+        if (firstAzimuthCell) {
+            firstAzimuthCell.textContent = newAzimuthValue.toFixed(5);
+            // Clear the input field
+            document.getElementById('azimuthValue').value = '';
+            // Recalculate azimuths for all stations based on the new value
+            recalculateAzimuths(newAzimuthValue);
+        }
+    } else {
+        // Alert the user if the input value is not a valid number
+        //showAlert('errorAzimuthValue');
+    }
+    pins.forEach(pin => {
+        calculateDepAndLatForPin(pin);
+    });
+
+}
+// คำนวณ azimuth ใหม่โดยอ้างอิงจากค่า azimuth ที่กำหนด
+function recalculateAzimuths(startingAzimuth) {
+    const azimuthCells = document.querySelectorAll('#deplatTable .azimuthCell');
+    const adjustedHACells = document.querySelectorAll('#deplatTable .adjHA');
+
+    // Assuming the first azimuth cell already has the starting azimuth
+    let cumulativeAzimuth = startingAzimuth;
+
+    // Start from the second cell (i = 1) since the first is already set
+    for (let i = 1; i < azimuthCells.length; i++) {
+        let currentHA = parseFloat(adjustedHACells[i].textContent);
+        cumulativeAzimuth += currentHA + 180;
+
+        // Adjust for values exceeding 360
+        while (cumulativeAzimuth >= 360) {
+            cumulativeAzimuth -= 360;
+        }
+
+        // Update the azimuth cell
+        azimuthCells[i].textContent = cumulativeAzimuth.toFixed(5);
+    }
+}
+
+//การคำนวค่า azimuth // ตั้งค่าการคำนวณ Azimuth ตามข้อมูลหมุด (Pins)  // ตั้งค่าการคำนวณ Azimuth โดยอัตโนมัติ
+function setupAzimuthCalculation() {
+    // Loop through each pin and add change event listener to the Azimuth input fields
+    pins.forEach((pin, index) => {
+        const azimuthInput = document.getElementById(`azimuth-input-${index}`);
+        if (azimuthInput) {
+            azimuthInput.addEventListener('change', function() {
+                calculateAzimuth(index);
+            });
+        }
+    });
+}
+function parseDMS(input) {
+    // ตรวจสอบว่า input ไม่เป็น null หรือ undefined
+    if (!input) return NaN;
+    const parts = input.match(/(-?\d+)[° ](\d+)['] (\d+(\.\d+)?)/);
+    if (!parts) return NaN;
+
+    const degrees = parseFloat(parts[1]);
+    const minutes = parseFloat(parts[2]);
+    const seconds = parseFloat(parts[3]);
+
+    return degrees + (minutes / 60) + (seconds / 3600);
+}
+
+// This function assumes that the Adjusted HA values and Azimuth input fields have corresponding IDs
+// คำนวณ Azimuth และอัพเดตในตาราง // คำนวณ Azimuth และอัพเดตบน UI
+function calculateAzimuth() {
+    const adjustedHACells = document.querySelectorAll('.adjHA'); // Adjusted HA cells
+    const azimuthCells = document.querySelectorAll('.azimuthCell'); // Azimuth cells
+
+    // Start with the first station's Adjusted HA as the initial azimuth
+    let cumulativeAzimuth = parseFloat(adjustedHACells[0].textContent);
+    azimuthCells[0].textContent = cumulativeAzimuth.toFixed(3); // Set the first station's azimuth
+
+    // Iterate over the remaining stations
+    for (let i = 1; i < adjustedHACells.length; i++) {
+        // Calculate the azimuth by adding the current Adjusted HA and 180 to the cumulative azimuth
+        cumulativeAzimuth += parseFloat(adjustedHACells[i].textContent) + 180;
+
+        // If the cumulative azimuth exceeds 360, subtract 360 to get the correct azimuth
+        while (cumulativeAzimuth >= 360) {
+            cumulativeAzimuth -= 360;
+        }
+
+        // Set the calculated azimuth in the table, formatted to 5 decimal places
+        azimuthCells[i].textContent = cumulativeAzimuth.toFixed(3);
+    }
+}
+// Attach the calculateAzimuth function to the Azimuth input field's onchange event for the first station
+document.addEventListener('DOMContentLoaded', (event) => {
+    const azimuthInputFirstStation = document.getElementById('azimuth-input-0');
+    if (azimuthInputFirstStation) {
+        azimuthInputFirstStation.addEventListener('change', calculateAzimuth);
+    }
+});
+// Attach the calculateAzimuth function to the Azimuth input field's onchange event
+document.addEventListener('DOMContentLoaded', (event) => {
+    for (let stationIndex = 1; stationIndex <= 3; stationIndex++) {
+        const azimuthInput = document.getElementById(`azimuth-input-${stationIndex}`);
+        if (azimuthInput) {
+            azimuthInput.addEventListener('change', calculateAzimuth);
+        }
+    }
+});
+//คำนวนค่า Departure
+function getAdjustedHADecimalFromStep3(pin) {
+    // Find the row for the given pin
+    const rows = document.querySelectorAll('#measurementTable tr');
+    let adjustedHADecimal = null;
+    
+    rows.forEach((row, index) => {
+        // Skip header, footer, and total rows
+        if (index > 0 && index < rows.length - 3) { 
+            const stationCell = row.cells[0].textContent;
+            if (stationCell === pin) {
+                const adjHaCell = row.querySelector('.adjHA');
+                if (adjHaCell) {
+                    // Assuming adjHaCell contains DMS format
+                    const dms = adjHaCell.textContent.trim().split(/[°'"]/).map(num => parseFloat(num) || 0);
+                    adjustedHADecimal = dmsToDecimal(...dms).toFixed(5); // Convert to decimal with 5 decimal places
+                }
+            }
+        }
+    });
+    
+    return adjustedHADecimal;
+}
+//คำนวนค่า Departure
+function setupDistanceCalculation() {
+    // วนลูปผ่านทุกหมุด
+    pins.forEach(pin => {
+        // ตั้งค่า event listener สำหรับฟิลด์ distance ของแต่ละหมุด
+        const distanceInput = document.getElementById(`distance-input-${pin}`);
+        if (distanceInput) {
+            distanceInput.addEventListener('change', function() {
+                calculateDepAndLatForPin(pin);
+            });
+        }
+    });
+}
+// คำนวณ Departure และ Latitude สำหรับหมุดที่กำหนดและอัพเดตในตาราง // คำนวณระยะทางระหว่าง markers และอัพเดตผลลัพธ์บน UI
+function calculateDepAndLatForPin(pin) {
+    // Check if the elements for distance and azimuth exist
+    const distanceInput = document.getElementById(`distance-input-${pin}`);
+    const azimuthCell = document.querySelector(`.azimuthCell[data-station="${pin}"]`); // Ensure that the selector matches the cell's class and data attribute
+
+    if (distanceInput && azimuthCell) {
+        // Retrieve the distance and azimuth for the pin
+        const distance = parseFloat(distanceInput.value) || 0;
+        const azimuthDegrees = parseFloat(azimuthCell.textContent) || 0;
+
+        // Convert azimuth from degrees to radians
+        const azimuthRadians = azimuthDegrees * (Math.PI / 180);
+
+        // Calculate departure and latitude
+        const departure = distance * Math.sin(azimuthRadians);
+        const latitude = distance * Math.cos(azimuthRadians);
+
+        // Update the values in the table
+        const departureCell = document.getElementById(`Departure-${pin}`);
+        const latitudeCell = document.getElementById(`Latitude-${pin}`);
+        if (departureCell && latitudeCell) {
+            departureCell.textContent = departure.toFixed(3);
+            latitudeCell.textContent = latitude.toFixed(3);
+        }
+    } else {
+        // Log an error in the console if the elements are not found
+        console.error(`Cannot find distance input or azimuth cell for pin: ${pin}`);
+    }
+    // หลังจากคำนวณค่า Departure และ Latitude แล้ว ควรเรียกใช้ฟังก์ชันนี้
+    calculateCorrections();
+    calculateBalancedValues();
+}
+
+
+//คำนวนค่า correction // คำนวณค่า Correction และอัพเดตในตาราง // คำนวณค่า correction สำหรับทุกหมุด และอัพเดตผลลัพธ์บน UI
+function calculateCorrections() {
+    let totalDeparture = 0;
+    let totalLatitude = 0;
+
+    // วนลูปผ่านทุกหมุดเพื่อหาค่ารวมของ Departure และ Latitude
+    pins.forEach(pin => {
+        const departureCell = document.getElementById(`Departure-${pin}`);
+        const latitudeCell = document.getElementById(`Latitude-${pin}`);
+
+        if (departureCell && latitudeCell) {
+            // แปลงค่าเป็นตัวเลขและเพิ่มเข้ากับค่ารวม
+            totalDeparture += parseFloat(departureCell.textContent) || 0;
+            totalLatitude += parseFloat(latitudeCell.textContent) || 0;
+        }
+    });
+
+    // คำนวณค่าการปรับแก้โดยการแบ่งค่า Error ออกเป็นจำนวนหมุด
+    const correctionDeparture = -totalDeparture / pins.length;
+    const correctionLatitude = -totalLatitude / pins.length;
+
+    // อัปเดตค่าการปรับแก้ในตาราง
+    pins.forEach(pin => {
+        const correctionDepartureCell = document.getElementById(`Correction-Departure-${pin}`);
+        const correctionLatitudeCell = document.getElementById(`Correction-Latitude-${pin}`);
+        if (correctionDepartureCell && correctionLatitudeCell) {
+            correctionDepartureCell.textContent = correctionDeparture.toFixed(3);
+            correctionLatitudeCell.textContent = correctionLatitude.toFixed(3);
+        }
+    });
+
+    // อัปเดตค่ารวมที่ตาราง
+    document.getElementById('totalDeparture').textContent = totalDeparture.toFixed(3);
+    document.getElementById('totalLatitude').textContent = totalLatitude.toFixed(3);
+}
+// คำนวณค่าสมดุลของ Departure และ Latitude และอัพเดตในตาราง // คำนวณค่า balanced สำหรับ departure และ latitude และอัพเดตผลลัพธ์บน UI
+function calculateBalancedValues() {
+    pins.forEach(pin => {
+        // ดึงค่าปรับแก้ Departure และ Latitude
+        const correctionDeparture = parseFloat(document.getElementById(`Correction-Departure-${pin}`).textContent) || 0;
+        const correctionLatitude = parseFloat(document.getElementById(`Correction-Latitude-${pin}`).textContent) || 0;
+
+        // ดึงค่าเดิมของ Departure และ Latitude
+        const originalDeparture = parseFloat(document.getElementById(`Departure-${pin}`).textContent) || 0;
+        const originalLatitude = parseFloat(document.getElementById(`Latitude-${pin}`).textContent) || 0;
+
+        // คำนวณค่าสมดุล
+        const balancedDeparture = originalDeparture + correctionDeparture;
+        const balancedLatitude = originalLatitude + correctionLatitude;
+
+        // อัปเดตค่าสมดุลในตาราง
+        document.getElementById(`Balanced-Departure-${pin}`).textContent = balancedDeparture.toFixed(3);
+        document.getElementById(`Balanced-Latitude-${pin}`).textContent = balancedLatitude.toFixed(3);
+    });
+    calculateTotals();
+}
+// คำนวณผลรวมสุดท้ายของการคำนวณและอัพเดตในตาราง // คำนวณรวมทั้งหมดสำหรับ distance, departure, latitude, และอื่นๆ และอัพเดตผลลัพธ์บน UI
+function calculateTotals() {
+    // Initialize total variables
+    let totalDistance = 0;
+    let totalDeparture = 0;
+    let totalLatitude = 0;
+    let totalCorrectionDeparture = 0;
+    let totalCorrectionLatitude = 0;
+    let totalBalancedDeparture = 0;
+    let totalBalancedLatitude = 0;
+
+    // Get all distance inputs and sum their values
+    document.querySelectorAll('.distanceInput').forEach(input => {
+        totalDistance += parseFloat(input.value) || 0;
+    });
+
+    // Get all departure cells and sum their values
+    document.querySelectorAll('.departureCell').forEach(cell => {
+        totalDeparture += parseFloat(cell.textContent) || 0;
+    });
+
+    // Get all latitude cells and sum their values
+    document.querySelectorAll('.latitudeCell').forEach(cell => {
+        totalLatitude += parseFloat(cell.textContent) || 0;
+    });
+    document.querySelectorAll('.Correction-departureCell').forEach(cell => {
+        totalCorrectionDeparture += parseFloat(cell.textContent) || 0;
+    });
+    document.querySelectorAll('.Correction-latitudeCell').forEach(cell => {
+        totalCorrectionLatitude += parseFloat(cell.textContent) || 0;
+    });
+    // Get all balanced departure cells and sum their values
+    document.querySelectorAll('.Balanced-departureCell').forEach(cell => {
+        totalBalancedDeparture += parseFloat(cell.textContent) || 0;
+    });
+
+    // Get all balanced latitude cells and sum their values
+    document.querySelectorAll('.Balanced-latitudeCell').forEach(cell => {
+        totalBalancedLatitude += parseFloat(cell.textContent) || 0;
+    });
+
+    // Update the total cells in the table
+    document.getElementById('totalDistance').textContent = totalDistance.toFixed(3);
+    document.getElementById('totalDeparture').textContent = totalDeparture.toFixed(3);
+    document.getElementById('totalLatitude').textContent = totalLatitude.toFixed(3);
+    document.getElementById('totalCorrectionDeparture').textContent = totalCorrectionDeparture.toFixed(3);
+    document.getElementById('totalCorrectionLatitude').textContent = totalCorrectionLatitude.toFixed(3);
+    document.getElementById('totalBalancedDeparture').textContent = totalBalancedDeparture.toFixed(3);
+    document.getElementById('totalBalancedLatitude').textContent = totalBalancedLatitude.toFixed(3);
+    calculateCoordinates();
+    updateAdditionalTableCalculations();
+}
+// เพิ่มพิกัด East ให้กับตารางและอัพเดต UI
+function addCoordinateEast() {
+    const eastValue = parseFloat(document.getElementById('EastValue').value);
+    if (!isNaN(eastValue)) {
+        const coordinatesEastCells = document.querySelectorAll('.coordinatesEast');
+        // Update the cell for the first pin (assumed to be at index 0)
+        if (coordinatesEastCells.length > 0) {
+            coordinatesEastCells[0].textContent = eastValue.toFixed(3);
+        }
+        document.getElementById('EastValue').value = ''; // Clear the input
+    } else {
+        showAlert('errorEastCoordinate');
+    }
+    pins.forEach(pin => {
+        calculateDepAndLatForPin(pin);
+    });
+}
+// เพิ่มพิกัด North ให้กับตารางและอัพเดต UI
+function addCoordinateNorth() {
+    const northValue = parseFloat(document.getElementById('NorthValue').value);
+    if (!isNaN(northValue)) {
+        const coordinatesNorthCells = document.querySelectorAll('.coordinatesNorth');
+        // Update the cell for the first pin (assumed to be at index 0)
+        if (coordinatesNorthCells.length > 0) {
+            coordinatesNorthCells[0].textContent = northValue.toFixed(3);
+        }
+        document.getElementById('NorthValue').value = ''; // Clear the input
+    } else {
+        showAlert('errorNorthCoordinate');
+    }
+    pins.forEach(pin => {
+        calculateDepAndLatForPin(pin);
+    });
+}
+// คำนวณพิกัดสำหรับแต่ละหมุดและอัพเดตบนแผนที่
+function calculateCoordinates() {
+    // สมมติว่ามี array ของ pins ที่เก็บชื่อของสถานีทั้งหมด
+    let easting = parseFloat(document.getElementById(`coordinatesEast-${pins[0]}`).textContent);
+    let northing = parseFloat(document.getElementById(`coordinatesNorth-${pins[0]}`).textContent);
+    // วนลูปเริ่มต้นจากหมุดที่สองไปจนถึงหมุดสุดท้าย
+    for (let i = 1; i < pins.length; i++) {
+        const currentPin = pins[i];
+        const previousPin = pins[i - 1];
+
+        const balancedDeparture = parseFloat(document.getElementById(`Balanced-Departure-${previousPin}`).textContent) || 0;
+        const balancedLatitude = parseFloat(document.getElementById(`Balanced-Latitude-${previousPin}`).textContent) || 0;
+
+        // อัพเดตค่า Easting และ Northing
+        easting += balancedDeparture;
+        northing += balancedLatitude;
+
+        // แสดงค่าพิกัดใหม่ในตาราง
+        document.getElementById(`coordinatesEast-${currentPin}`).textContent = easting.toFixed(3);
+        document.getElementById(`coordinatesNorth-${currentPin}`).textContent = northing.toFixed(3);
+    }
+}
+
+
+// Adjust this function to handle negative values and decimal seconds // แปลงวินาทีเป็นรูปแบบ DMS (Degree, Minutes, Seconds)
+function convertSecondsToDMS(totalSeconds) {
+    // Determine the sign based on the totalSeconds
+    const sign = totalSeconds < 0 ? '-' : '';
+    // Use absolute value to ensure correct conversion
+    totalSeconds = Math.abs(totalSeconds);
+
+    const degrees = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = (totalSeconds % 60).toFixed(2);
+
+    return `${sign}${degrees}° ${minutes}' ${seconds}"`;
+}
+//Step 5
+// ส่งออกข้อมูลจากตารางไปยังไฟล์ XLSX
+function exportTableToXLSX(filename) {
+    const wb = XLSX.utils.book_new(); // Create a new workbook
+    const ws_data = [];
+
+    const rows = document.querySelectorAll("#surveyTables table tr");
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = [], cols = rows[i].querySelectorAll("td, th");
+
+        for (let j = 0; j < cols.length; j++) {
+            let value = '';
+            if (cols[j].querySelector('input')) {
+                const inputs = cols[j].querySelectorAll('input');
+                const inputValues = Array.from(inputs).map(input => input.value.trim() === '' ? '0' : input.value);
+                value = inputValues.map((val, idx) => val + (idx === 0 ? "°" : idx === 1 ? "'" : '"')).join(" ");
+            } else {
+                value = cols[j].innerText.trim();
+            }
+            row.push(value);
+        }
+        ws_data.push(row);
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1"); // Add the worksheet to the workbook
+
+    XLSX.writeFile(wb, filename); // Trigger the download
+}
+let haDataByStation = {}; // โครงสร้างเพื่อเก็บข้อมูล HA แยกตาม Station
+
+let stationData = {}; // สำหรับเก็บข้อมูล HA readings ของแต่ละ station
+
+// จัดการไฟล์ Excel ที่ถูกเลือกเพื่อนำเข้าข้อมูล
+function handleFileSelect(evt) {
+    const file = evt.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        
+        // แปลงเป็น JSON และสร้างข้อมูลสำหรับ dropdown
+        const json = XLSX.utils.sheet_to_json(worksheet, {header:1}); // อ่านเป็น array
+        stationData = {}; // รีเซ็ตข้อมูลเก่า
+        json.forEach((row, index) => {
+            // สมมติว่า column แรกคือชื่อ station และ column ที่สามคือ HA reading
+            if (row && row[0] && !isNaN(row[0])) {
+                if (!stationData[row[0]]) {
+                    stationData[row[0]] = []; // สร้าง array สำหรับ station นั้นๆ
+                }
+                // สมมติว่า HA reading อยู่ใน cell C (index 2)
+                stationData[row[0]].push(row[2]);
+            }
+        });
+
+        updateHADropdown(); // อัปเดต dropdown หลังจากโหลดข้อมูล
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+// อัพเดต dropdown หลังจากนำเข้าข้อมูลจาก Excel
+function updateHADropdown() {
+    const haSelect = document.getElementById('haSelect');
+    haSelect.innerHTML = '';
+
+    // เพิ่มตัวเลือก "ไม่เลือก"
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'ไม่เลือก';
+    haSelect.appendChild(defaultOption);
+
+    // เพิ่มตัวเลือกสำหรับแต่ละ station
+    Object.keys(stationData).forEach(station => {
+        const option = document.createElement('option');
+        option.value = station;
+        option.textContent = `${station}`;
+        haSelect.appendChild(option);
+    });
+}
+
+
+//Step 5 
+var map;
+         var markers = [];
+         var polygonExists = false;
+         var distanceLines = [];
+         var showDistances = false;
+     
+         function initMap() {
+           map = new longdo.Map({ placeholder: document.getElementById('map') });
+         }
+
+// ตรวจสอบและแปลงค่า EPSG Code ตามค่า Easting
+function getEpsgCode(eastValue) {
+    if (eastValue >= 166021.44 && eastValue <= 833978.56) { // ช่วงของ Zone 47
+        return '32647'; // EPSG code for UTM Zone 47N
+    } else {
+        return '32648'; // EPSG code for UTM Zone 48N as a default
+    }
+}
+// คำนวณพื้นที่จากตารางขั้นที่ 5 และเพิ่มมาร์กเกอร์บนแผนที่
+function populateStep5Table() {
+    const step4Table = document.getElementById('deplatTable'); // ตาราง Step 4
+    const step5Table = document.getElementById('myTable3'); // ตาราง Step 5
+
+    // ล้างตาราง Step 5 ก่อนเพิ่มข้อมูลใหม่
+step5Table.innerHTML = `
+<tr>
+    <td class="bold-header lang" data-key="pinCoordinates47">Pin Coordinates</td>
+    <td class="bold-header lang" data-key="east47">Easting (meter)</td>
+    <td class="bold-header lang" data-key="north47">Northing (meter)</td>
+    <td class="bold-header lang" data-key="lon47">Longitude ( ° )</td>
+    <td class="bold-header lang" data-key="lat47">Latitude ( ° )</td>
+</tr>
+`;
+
+    // วนลูปเพื่อเพิ่มข้อมูลจาก Step 4 ไปยัง Step 5
+    pins.forEach((pin) => {
+        const eastElement = document.getElementById(`coordinatesEast-${pin}`);
+        const northElement = document.getElementById(`coordinatesNorth-${pin}`);
+
+        if (eastElement && northElement) {
+            const eastValue = parseFloat(eastElement.textContent);
+            const northValue = parseFloat(northElement.textContent);
+            const epsgCode = getEpsgCode(eastValue);
+
+            proj4.defs(`EPSG:${epsgCode}`, `+proj=utm +zone=${epsgCode.substring(3, 5)} +ellps=WGS84 +datum=WGS84 +units=m +no_defs`);
+            const utmCoords = [eastValue, northValue];
+            const latLon = proj4(proj4.defs(`EPSG:${epsgCode}`), proj4.defs('EPSG:4326'), utmCoords);
+
+            const newRow = step5Table.insertRow();
+            newRow.innerHTML = `
+                <td>${pin}</td>
+                <td>${eastValue.toFixed(4)}</td>
+                <td>${northValue.toFixed(4)}</td>
+                <td>${latLon[0].toFixed(15)}</td> <!-- Lon -->
+                <td>${latLon[1].toFixed(15)}</td> <!-- Lat -->
+            `;
+        }
+    });
+    addMarkerFromTable();
+} 
+// เพิ่มมาร์กเกอร์จากข้อมูลในตาราง
+function addMarkerFromTable() {
+    // ล้างมาร์กเกอร์ที่มีอยู่บนแผนที่
+    markers.forEach(marker => map.Overlays.remove(marker));
+    markers = [];
+
+    // อ่านค่าพิกัดจากตาราง
+    const table = document.getElementById('myTable3');
+    const rows = table.getElementsByTagName('tr');
+
+    // วนลูปผ่านทุกแถวของตาราง (ยกเว้นแถวหัวข้อ)
+    for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        if (cells.length > 3) {
+            const lon = parseFloat(cells[3].innerText);
+            const lat = parseFloat(cells[4].innerText);
+
+            if (!isNaN(lon) && !isNaN(lat)) {
+                // สร้างมาร์กเกอร์บนแผนที่
+                const location = { lon: lon, lat: lat };
+                const marker = new longdo.Marker(location, {
+                    title: 'Marker ' + i,
+                    detail: 'Lon: ' + lon.toFixed(4) + ', Lat: ' + lat.toFixed(4),
+                    draggable: false
+                });
+
+                // เพิ่มมาร์กเกอร์ลงบนแผนที่
+                map.Overlays.add(marker);
+                markers.push(marker);
+                zoomToMarker(marker);
+            }
+        }
+    }
+}
+// Optionally, you can define the zoomToMarker function if not already defined // ซูมไปยังมาร์กเกอร์ที่กำหนด
+function zoomToMarker(marker) {
+  map.location(marker.location());
+  map.zoom(15);
+}
+// ล้างการคำนวณระยะทาง // ล้างข้อมูลการคำนวณระยะทาง
+function clearDistanceCalculation() {
+       // เพิ่มโค้ดที่ต้องการให้ทำงานเมื่อลบพิกัด
+       const distanceTable = document.getElementById("distanceTable");
+       while (distanceTable.rows.length > 1) {
+         distanceTable.deleteRow(1);
+       }
+     
+       distanceLines.forEach(function (line) {
+         map.Overlays.remove(line);
+       });
+       distanceLines = [];
+     
+       showDistances = false;
+       document.getElementById("distanceResult").innerHTML = "";
+     }
+
+// ล้างการคำนวณพื้นที่ // ล้างข้อมูลการคำนวณพื้นที่
+function clearAreaCalculation() {
+       // เพิ่มโค้ดที่ต้องการให้ทำงานเมื่อลบพิกัด
+       document.getElementById("resultDisplay").innerHTML = "";
+     
+       // เพิ่มการล้างค่า area
+       area = 0;
+     
+       const existingPolygon = map.Overlays.list().find(overlay => overlay instanceof longdo.Polygon);
+       if (existingPolygon) {
+         map.Overlays.remove(existingPolygon);
+       }
+     }
+// สลับการแสดงผลของ Polygon บนแผนที่     // สลับการแสดงผลของ Polygon บนแผนที่
+function togglePolygon() {
+       const polygonButton = document.getElementById("polygonButton");
+       if (polygonExists) {
+         const existingPolygon = map.Overlays.list().find(overlay => overlay instanceof longdo.Polygon);
+         if (existingPolygon) {
+           map.Overlays.remove(existingPolygon);
+         }
+         polygonExists = false;
+       } else {
+         const polygonPoints = markers.map(marker => ({ lon: marker.location().lon, lat: marker.location().lat }));
+         var AreaShow = document.getElementById('resultDisplay').innerHTML; // Use innerHTML instead of value
+         var polygonArea = calculatePolygonArea('resultDisplay');
+         var polygon = new longdo.Polygon(polygonPoints, {
+           title: `พื้นที่`,
+           detail: +resultDisplay,
+           label: 'พื้นที่',
+           lineWidth: 2,
+           lineColor: 'rgba(0, 0, 0, 1)',
+           fillColor: 'rgba(255, 0, 0, 0.4)',
+           editable: false,
+           weight: longdo.OverlayWeight.Top
+         });
+         map.Overlays.add(polygon);
+         polygonExists = true;
+       }
+     }
+  // คำนวณพื้นที่และสลับการแสดงผลของ Polygon   // คำนวณพื้นที่และสลับการแสดงผลของ Polygon 
+function calculateAreaAndTogglePolygon() {
+       const resultDisplay = document.getElementById("resultDisplay");
+     
+       if (resultDisplay.innerHTML.trim() !== "") {
+         resultDisplay.innerHTML = "";
+     
+         // Check if there is a Polygon and remove it
+         const existingPolygon = map.Overlays.list().find(overlay => overlay instanceof longdo.Polygon);
+         if (existingPolygon) {
+           map.Overlays.remove(existingPolygon);
+         }
+     
+         // ปิดฟังก์ชันคำนวณพื้นที่
+         clearAreaCalculation();
+       } else {
+         calculateArea();  // Make sure calculateArea function is working correctly
+         togglePolygon();
+       }
+     }
+// คำนวณระยะทางและอัพเดตผลลัพธ์การคำนวณ    
+function distance() {
+           if (showDistances) {
+             distanceLines.forEach(function (line) {
+               map.Overlays.remove(line);
+             });
+             distanceLines = [];
+             showDistances = false;
+     
+             document.getElementById("distanceResult").innerHTML = "";
+     
+             // เรียกใช้ฟังก์ชันเพื่อลบข้อมูลในตาราง
+             clearDistanceTable();
+           } else {
+             if (markers.length >= 2) {
+               const distances = [];
+               for (let i = 0; i < markers.length - 1; i++) {
+                 const pair = { from: markers[i], to: markers[i + 1] };
+                 const displacement = distanceBetweenMarkers(pair.from.location(), pair.to.location());
+                 const line = new longdo.Polyline([pair.from.location(), pair.to.location()], {
+                   lineWidth: 2,
+                   lineColor: 'red'
+                 });
+                 map.Overlays.add(line);
+                 distanceLines.push(line);
+     
+                 distances.push({
+                   from: pair.from.title,
+                   to: pair.to.title,
+                   distance: displacement
+                 });
+     
+                 // เพิ่มข้อมูลระยะทางลงในตาราง
+                 updateDistanceTable(pair.from.title, pair.to.title, displacement.toFixed(2));
+               }
+     
+               // คำนวณระยะทางสุดท้าย (จากจุดสุดท้ายไปยังจุดแรก)
+               const lastPair = { from: markers[markers.length - 1], to: markers[0] };
+               const lastDisplacement = distanceBetweenMarkers(lastPair.from.location(), lastPair.to.location());
+               const lastLine = new longdo.Polyline([lastPair.from.location(), lastPair.to.location()], {
+                 lineWidth: 2,
+                 lineColor: 'red'
+               });
+               map.Overlays.add(lastLine);
+               distanceLines.push(lastLine);
+     
+               distances.push({
+                 from: lastPair.from.title,
+                 to: lastPair.to.title,
+                 distance: lastDisplacement
+               });
+     
+               // เพิ่มข้อมูลระยะทางสุดท้ายลงในตาราง
+               updateDistanceTable(lastPair.from.title, lastPair.to.title, lastDisplacement.toFixed(2));
+     
+               showDistances = true;
+             } else {
+                showAlert('minimumTwoCoordinatesAlert');
+             }
+           }
+         }
+// คำนวณระยะทางระหว่างมาร์กเกอร์   // คำนวณระยะทางระหว่าง markers และอัพเดต UI
+function distanceBetweenMarkers(location1, location2) {
+           return longdo.Util.distance([location1, location2]);
+         }
+ // ล้างตารางระยะทาง    
+function clearDistanceTable() {
+           const table = document.getElementById("distanceTable");
+           while (table.rows.length > 1) {
+             table.deleteRow(1);
+           }
+         }
+  // อัพเดตตารางระยะทาง   
+function updateDistanceTable(from, to, distance) {
+       const table = document.getElementById("distanceTable");
+       const newRow = table.insertRow();
+       const cell1 = newRow.insertCell(0);
+       const cell2 = newRow.insertCell(1);
+       const cell3 = newRow.insertCell(2);
+       cell1.innerHTML = `<td>${from}</td>`;
+       cell2.innerHTML = `<td>${to}</td>`;
+       cell3.innerHTML = `<td data-key="distanceUnit">${distance} <span class="lang-unit">เมตร</span></td>`;
+     }
+     
+// เพิ่มฟังก์ชัน calculatePolygonArea และ calculateArea 
+// คำนวณพื้นที่ Polygon
+function calculatePolygonArea(coords) {
+       let area = 0;
+     
+       for (let i = 0; i < coords.length; i++) {
+         const x1 = coords[i].east;
+         const y1 = coords[i].north;
+         const x2 = coords[(i + 1) % coords.length].east;
+         const y2 = coords[(i + 1) % coords.length].north;
+     
+         area += x1 * y2 - x2 * y1;
+       }
+     
+       return Math.abs(area) / 2;
+     }
+ // คำนวณพื้นที่จากมาร์กเกอร์และอัพเดตผลลัพธ์    
+function calculateArea() {
+  const resultDisplay = document.getElementById("resultDisplay");
+  const currentLang = document.body.getAttribute('data-lang'); // ดึงภาษาปัจจุบัน
+
+  if (markers.length < 3) {
+    // อัพเดทข้อความแจ้งเตือนเมื่อไม่มีพิกัดหมุดเพียงพอ
+    resultDisplay.textContent = languageData[currentLang]['areaCalculationWarning'];
+    return;
+  }
+
+  const utmCoords = markers.map(marker => {
+    const lon = parseFloat(marker.location().lon);
+    const lat = parseFloat(marker.location().lat);
+
+    let zone;
+    if (lon >= 96 && lon <= 102) {
+      zone = 47;
+    } else if (lon > 102 && lon <= 108) {
+      zone = 48;
+    } else {
+      // แสดงข้อความแจ้งเตือนเมื่อพิกัดไม่อยู่ในขอบเขตที่กำหนด
+      alert(languageData[currentLang]['longitudeOutOfRange']);
+      return;
+    }
+
+    const utmZone = `+proj=utm +zone=${zone} +ellps=WGS84 +datum=WGS84 +units=m +no_defs`;
+    const utmCoords = proj4(utmZone, [lon, lat]);
+
+    return { east: utmCoords[0], north: utmCoords[1] };
+  }).filter(coord => coord != null); // ตรวจสอบว่าไม่มีค่า `null` หลังจากการกรอง
+
+  // ตรวจสอบว่า utmCoords ไม่ว่างเปล่าหลังจากการกรอง
+  if (utmCoords.length < 3) {
+    return;
+  }
+
+  const area = calculatePolygonArea(utmCoords);
+  window.latestAreaCalculationResult = area.toFixed(4); // บันทึกผลลัพธ์การคำนวณ
+
+  // อัพเดทข้อความผลลัพธ์พื้นที่
+  resultDisplay.textContent = `${languageData[currentLang]['areaResultPrefix']} ${window.latestAreaCalculationResult} ${languageData[currentLang]['areaUnit']}`;
+}
+
+     //End step 5
+// เพิ่มหมุดตามชื่อที่กำหนดและอัพเดต UI // เพิ่มหมุดโดยอ้างอิงจากชื่อ
+function addPinByName(pinName) {
+    if (pinName && !pins.includes(pinName)) {
+        pins.push(pinName); // Add the pin name to your pins array
+        updateUI(); // Update the UI to reflect changes
+    } else {
+        // Handle the case where the pin is a duplicate or invalid
+        console.error(`Pin "${pinName}" is already added or is invalid.`);
+    }
+
+}
+//export step 1  // ส่งออกข้อมูลไปยัง Excel // ส่งออกข้อมูลไปยัง Excel
+function exportToExcel() {
+    // สร้าง Workbook ใหม่
+    var wb = XLSX.utils.book_new();
+
+    // สร้าง Array เพื่อเก็บข้อมูลจากตาราง
+    var ws_data = [['ลำดับ', 'ชื่อหมุด']]; // หัวตาราง
+
+    // Loop ผ่านแต่ละหมุดและเพิ่มเข้าไปใน ws_data
+    pins.forEach(function(pin, index) {
+        ws_data.push([index + 1, pin]); // เริ่มจากลำดับที่ 1
+    });
+
+    // สร้าง Worksheet จากข้อมูลใน ws_data
+    var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+    // เพิ่ม Worksheet นี้เข้าไปใน Workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Pins");
+
+    // ตั้งชื่อไฟล์
+    var filename = 'pins_export.xlsx';
+
+    // เอ็กซ์พอร์ต Workbook เป็นไฟล์ Excel
+    XLSX.writeFile(wb, filename);
+}
+// ส่งออกข้อมูลจากทุกขั้นตอนไปยังไฟล์ Excel เดียว // ส่งออกข้อมูลของทุก step ไปยัง Excel
+function exportStepsToExcel() {
+    const wb = XLSX.utils.book_new(); // Create a new workbook
+
+    // Step 1: Export pins
+    const ws1_data = [['ลำดับ', 'ชื่อหมุด']];
+    pins.forEach((pin, index) => {
+        ws1_data.push([index + 1, pin]);
+    });
+    const ws1 = XLSX.utils.aoa_to_sheet(ws1_data);
+    XLSX.utils.book_append_sheet(wb, ws1, "Step 1 Pins");
+
+    // Step 2: Export survey data ensuring units are included for ha reading and avg ha
+    const ws2_data = [];
+const rows = document.querySelectorAll("#surveyTables table tr");
+for (let i = 0; i < rows.length; i++) {
+    const row = [], cols = rows[i].querySelectorAll("td, th");
+
+    for (let j = 0; j < cols.length; j++) {
+        let value = '';
+        if (cols[j].querySelector('input')) {
+            const inputs = cols[j].querySelectorAll('input');
+            const inputValues = Array.from(inputs).map(input => {
+                // Check for degrees, minutes, and seconds
+                if (input.className.includes('degrees') || input.className.includes('minutes') || input.className.includes('seconds')) {
+                    // Ensure the unit is added (°, ', ") accordingly
+                    let unit = '';
+                    if (input.className.includes('degrees')) unit = '°';
+                    if (input.className.includes('minutes')) unit = "'";
+                    if (input.className.includes('seconds')) unit = '"';
+                    return input.value.trim() === '' ? '0' + unit : input.value + unit;
+                } else {
+                    return input.value.trim() === '' ? '0' : input.value;
+                }
+            });
+            value = inputValues.join(" ");
+        } else {
+            value = cols[j].innerText.trim();
+        }
+        row.push(value);
+    }
+    ws2_data.push(row);
+}
+    
+    const ws2 = XLSX.utils.aoa_to_sheet(ws2_data);
+    XLSX.utils.book_append_sheet(wb, ws2, "Step 2 Survey Data");
+        // Step 3: Export measurement data
+        const ws3_data = [];
+    const measurementRows = document.querySelectorAll("#measurementTable tr");
+    for (let i = 0; i < measurementRows.length; i++) {
+        const row = [], cols = measurementRows[i].querySelectorAll("td, th");
+
+        for (let j = 0; j < cols.length; j++) {
+            let value = '';
+            if (cols[j].querySelector('input')) {
+                const inputs = cols[j].querySelectorAll('input');
+                const inputValues = Array.from(inputs).map(input => input.value.trim() === '' ? '0' : input.value);
+                value = inputValues.join(" ");
+            } else {
+                value = cols[j].innerText.trim();
+            }
+            row.push(value);
+        }
+        ws3_data.push(row);
+    }
+    const ws3 = XLSX.utils.aoa_to_sheet(ws3_data);
+    XLSX.utils.book_append_sheet(wb, ws3, "Step 3 Measurement Data");
+
+    // Step 4: Export deplat (departure and latitude) data
+    const ws4_data = [['Station', 'Adjusted HA', 'Azimuth', 'Distance', 'Departure', 'Latitude', 'Correction Departure', 'Correction Latitude', 'Balanced Departure', 'Balanced Latitude', 'East', 'North']];
+
+// ตรวจสอบให้แน่ใจว่าเลือกเฉพาะแถวข้อมูลจาก tbody ของตารางเท่านั้น
+const deplatRows = document.querySelectorAll("#deplatTable tbody tr");
+
+// เริ่มวนลูปที่ i = 1 เพื่อข้ามหัวข้อตาราง (header) ถ้าหัวข้อถูกเลือกมาด้วย
+for (let i = 2; i < deplatRows.length; i++) {
+    const row = [], cols = deplatRows[i].querySelectorAll("td, th");
+    for (let j = 0; j < cols.length; j++) {
+        // Check if there is an input and get its value
+        const input = cols[j].querySelector('input');
+        let value = input ? input.value : cols[j].innerText.trim();
+        row.push(value);
+    }
+    ws4_data.push(row);
+}
+
+    const ws4 = XLSX.utils.aoa_to_sheet(ws4_data);
+    XLSX.utils.book_append_sheet(wb, ws4, "Step 4 Deplat Data");
+// Step 5: Export data from myTable3, myTable1, myTable2
+const ws5_data = []; // Initialize the array for Step 5 data
+
+// Define a function to extract data from a table
+const extractTableData = (selector) => {
+    const tableRows = document.querySelectorAll(selector + " tr");
+    const tableData = [];
+    for (let i = 0; i < tableRows.length; i++) {
+        const row = [], cols = tableRows[i].querySelectorAll("td, th");
+        for (let j = 0; j < cols.length; j++) {
+            const input = cols[j].querySelector('input');
+            const value = input ? input.value : cols[j].innerText.trim();
+            row.push(value);
+        }
+        tableData.push(row);
+    }
+    return tableData;
+};
+
+// Extract data from each table and add to the worksheet data
+const myTable3Data = extractTableData("#myTable3");
+const distanceTable = extractTableData("#distanceTable");
+const myTable2Data = extractTableData("#myTable2");
+
+// Concatenate all table data
+ws5_data.push(...myTable3Data, ...distanceTable, ...myTable2Data);
+
+//Step 5 export
+const ws5 = XLSX.utils.aoa_to_sheet(ws5_data);
+XLSX.utils.book_append_sheet(wb, ws5, "Step 5 Additional Data");
+
+  // Export the workbook
+  const filename = 'Survey_data.xlsx';
+    XLSX.writeFile(wb, filename);
+}
+
+
+
+// ปุ่มกด STEP // แสดงขั้นตอนที่กำหนดใน UI // เปิดแสดงขั้นตอนที่กำหนดใน UI และโหลดแผนที่หากเป็นขั้นตอนที่ 5
+// เปิดแสดงขั้นตอนที่กำหนดใน UI และเริ่มต้นการทำงานของแผนที่หากเข้าสู่ขั้นตอนที่ 5
+function showStep(stepNumber) {
+  for (let i = 1; i <= 5; i++) {
+    const step = document.getElementById(`step${i}`);
+    step.style.display = i === stepNumber ? 'block' : 'none';
+
+    // Check if we're moving to Step 5
+    if (i === 5 && stepNumber === 5) {
+      initMap();
+      populateStep5Table();
+    }
+  }
+  //addAzimuth();
+}
+// อัพเดต UI ให้สอดคล้องกับข้อมูลปัจจุบัน // อัพเดต UI โดยรวม รวมถึงการสร้างตารางและการคำนวณผลรวม
+function updateUI() {
+    updatePinTable();
+    updateDropdowns();
+    createMeasurementTable();
+    calculateSumHAFromAllColumns();
+    createDeplatTable();
+    setupAzimuthCalculation();
+    getDistancesFromFinalHDTable();
+}
+// ดำเนินการต่างๆ เมื่อหน้าเว็บโหลดเสร็จสิ้น เช่น อัพเดต UI
+window.onload = function() {
+    updateUI();
+}
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+</body>
+</html>

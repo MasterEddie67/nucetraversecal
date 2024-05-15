@@ -1,0 +1,843 @@
+body {
+    font-family: 'IBM Plex Sans Thai', sans-serif;
+  }
+  #pinTable tr {
+    background-color: #ffffff72; /* สีขาว */
+  
+    th {
+        background-color: #a9a7a772;
+    }
+  }
+  .navbar, .steps-buttons {
+    background-color: #000000;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 10px 10px 0 rgba(0,0,0,0.2);
+  }
+  
+  .step {
+    width: 95%;
+    margin: 20px auto;
+    background-color: #e9e9e9;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  /* กำหนดสไตล์เฉพาะสำหรับอุปกรณ์ที่มีหน้าจอขนาดไม่เกิน 768px */
+  @media only screen and (max-width: 768px) {
+    .navbar, .steps-buttons {
+      /* ตัวอย่าง: กำหนดให้แถบนำทางแสดงเป็นแนวตั้งเมื่ออยู่บนหน้าจอขนาดเล็ก */
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .step {
+      /* ตัวอย่าง: ให้ step มีความกว้างเต็มหน้าจอบนอุปกรณ์ขนาดเล็ก */
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+    }
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+    vertical-align: auto;
+  }
+  
+  /* แอดพิน */
+  
+  .add-btn {
+    background-color: #9df9ef;
+    border: 0 solid #e2e8f0;
+    border-radius: 1.5rem;
+    box-sizing: border-box;
+    color: #0d172a;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Basier circle",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 0.7rem 0.7rem;
+    text-align: center;
+    text-decoration: none #0d172a solid;
+    text-decoration-thickness: auto;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  
+  .add-btn:hover {
+    background-color: #51e2f5;
+    color: #fff;
+  }
+  
+  @media (min-width: 768px) {
+    .add-btn {
+      font-size: 1.125rem;
+      padding: 0.6rem 1.2rem;
+  }
+  
+  .delete-btn {
+    background-color: #f75990;
+    border: 0 solid #e2e8f0;
+    border-radius: 1.5rem;
+    box-sizing: border-box;
+    color: #0d172a;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Basier circle",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 1rem 1.6rem;
+    text-align: center;
+    text-decoration: none #0d172a solid;
+    text-decoration-thickness: auto;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  
+  .delete-btn:hover {
+    background-color: #ff1d58;
+    color: #fff;
+  }
+  
+  @media (min-width: 768px) {
+    .delete-btn {
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+  .movepin-btn {
+    background-color: #2ee866;
+    border: 0 solid #e2e8f0;
+    border-radius: 1.5rem;
+    box-sizing: border-box;
+    color: #0d172a;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Basier circle",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 1rem 1.6rem;
+    text-align: center;
+    text-decoration: none #0d172a solid;
+    text-decoration-thickness: auto;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  
+  .movepin-btn:hover {
+    background-color: #08fb28;
+    color: #fff;
+  }
+  
+  @media (min-width: 768px) {
+    .movepin-btn {
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+  
+  select {
+    padding: 5px;
+    margin-right: 10px;
+  }
+  .inputazbutton {
+    margin-top: 20px;
+  }
+  #map {
+    width: 100%; /* Adjust the width as necessary */
+    height: 500px; /* Adjust the height as necessary */
+  }
+  
+  #myTable {
+    width: 100%; /* This will make the table width 100% of its container */
+    margin: 0 auto;
+    table-layout: fixed;
+  }
+  
+  /* Add responsive design features if needed */
+  @media (max-width: 768px) {
+    /* Adjust styles for smaller screens */
+  }
+  }
+  
+  /*ซ่อนตาราง
+  /* CSS สำหรับซ่อนตาราง */
+  #surveyTable, #hdDataTable, #averageHDDataTable, #swappedAverageHDTable, #finalHDTable {
+  display: none; /* หรือ 'block' ตามที่คุณต้องการ */
+  }
+  
+  /* เปลี่ยนภาษา */
+  .change-language-btn {
+    background-color: #a0d2eb;
+    border-radius: 12px;
+    color: #000;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 15px;
+    text-align: center;
+    transition: 200ms;
+    width: auto;
+    box-sizing: border-box;
+    border: 0;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  
+  
+  .change-language-btn:not(:disabled):hover,
+  .change-language-btn:not(:disabled):focus {
+    outline: 0;
+    background: #8458B3;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.2), 0 3px 8px 0 rgba(0,0,0,.15);
+  }
+  
+  .change-language-btn:disabled {
+    filter: saturate(0.2) opacity(0.5);
+    -webkit-filter: saturate(0.2) opacity(0.5);
+    cursor: not-allowed;
+  }
+  
+  /* step */
+  .step-btna {
+  background-color: #ff6600;
+  border: 0 solid #e2e8f0;
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+  color: #0d172a;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Basier circle",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 1rem 1.6rem;
+  text-align: center;
+  text-decoration: none #0d172a solid;
+  text-decoration-thickness: auto;
+  transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  }
+  
+  .step-btna:hover {
+  background-color: #ff0000;
+  color: #fff;
+  }
+  
+  @media (min-width: 768px) {
+  .step-btna {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .step-btn {
+  background-color: #ff6600;
+  border: 0 solid #e2e8f0;
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+  color: #0d172a;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Basier circle",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 1rem 1.6rem;
+  text-align: center;
+  text-decoration: none #0d172a solid;
+  text-decoration-thickness: auto;
+  transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  }
+  
+  .step-btn:hover {
+  background-color: #ff0000;
+  color: #fff;
+  }
+  
+  @media (min-width: 768px) {
+  .step-btn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .add-button {
+    background-color: #d0bdf4;
+    border: 0 solid #e2e8f0;
+    border-radius: 1.5rem;
+    box-sizing: border-box;
+    color: #0d172a;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Basier circle",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 1rem 1.6rem;
+    text-align: center;
+    text-decoration: none #0d172a solid;
+    text-decoration-thickness: auto;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    }
+    
+    .add-button:hover {
+    background-color: #8458B3;
+    color: #fff;
+    }
+    
+    @media (min-width: 768px) {
+    .add-button {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+  }
+  
+  /* ดรอปดาว */
+  .step select {
+  /* กำหนดสไตล์ของ dropdown ที่นี่ */
+  background-color: #ff6600; /* สีพื้นหลัง */
+  color: #333333; /* สีข้อความ */
+  padding: 8px; /* ขนาดของ padding */
+  border-radius: 4px; /* ความโค้งของขอบ */
+  border: 1px solid #cccccc; /* สไตล์ขอบ */
+  /* อื่นๆ เช่น font-size, font-family, etc. */
+  }
+  
+  .step select:hover {
+  background-color: #ff0000; /* สีพื้นหลังเมื่อ hover */
+  color: #fff;
+  }
+  
+  .step select:focus {
+  border-color: #000000; /* สีขอบเมื่อ focus */
+  }
+  
+  .active-step {
+  background-color: #6c5ce7; /* สีที่คุณต้องการให้แสดงเมื่อปุ่มนั้น active */
+  color: white; /* สีของตัวหนังสือเมื่อปุ่มนั้น active */
+  /* สามารถเพิ่มเงาหรือสไตล์อื่นๆ ตามที่คุณต้องการ */
+  }
+  
+  /* เพิ่มเงาให้กับ navbar */
+  .navbar {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* สไตล์ของเงา */
+  }
+  .createSurveyTable-btn {
+    background-color: #9df9ef;
+    border: 0 solid #e2e8f0;
+    border-radius: 1.5rem; /* ปรับให้มีค่าน้อยลง */
+    box-sizing: border-box;
+    color: #0d172a;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Basier circle", -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 0.9rem; /* ลดขนาดของตัวอักษรลง */
+    font-weight: 600;
+    line-height: 1;
+    padding: 0.5rem 0.5rem; /* ลด padding ทั้งสองด้าน */
+    text-align: center;
+    text-decoration: none #0d172a solid;
+    text-decoration-thickness: auto;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  
+  .createSurveyTable-btn:hover {
+    background-color: #51e2f5;
+    color: #fff;
+  }
+  
+  @media (min-width: 768px) {
+    .createSurveyTable-btn {
+      font-size: 1rem; /* ปรับขนาดของตัวอักษรลงในหน้าจอที่กว้างขึ้น */
+      padding: 0.5rem 0.5rem; /* ปรับ padding ให้เหมาะสมกับหน้าจอขนาดใหญ่ */
+    }
+  }
+  }
+  } 
+  
+  
+  button[onclick="importSurveyTable()"],
+  button[onclick="importSurveyTableHAHD()"] {
+  
+    display: none;
+  }
+  button[onclick="importFirstData1()"] {
+  display: none;
+  }
+  
+  .delete-style {
+  background-color: #f75990;
+  border: 0 solid #e2e8f0;
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+  color: #0d172a;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Basier circle",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 1rem 1.6rem;
+  text-align: center;
+  text-decoration: none #0d172a solid;
+  text-decoration-thickness: auto;
+  transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  }
+  
+  .delete-style:hover {
+  background-color: #ff1d58;
+  color: #fff;
+  }
+  
+  @media (min-width: 768px) {
+  .delete-style {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  }
+  
+  .calcux {
+  background-color: #2ee866;
+  border: 0 solid #e2e8f0;
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+  color: #0d172a;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Basier circle",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 1rem 1.6rem;
+  text-align: center;
+  text-decoration: none #0d172a solid;
+  text-decoration-thickness: auto;
+  transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  }
+  
+  .calcux:hover {
+  background-color: #08fb28;
+  color: #fff;
+  }
+  
+  @media (min-width: 768px) {
+  .calcux {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  }
+  
+  /* CSS */
+  .contract {
+  background-color: #c2fbd7;
+  border-radius: 100px;
+  box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
+  color: green;
+  cursor: pointer;
+  display: inline-block;
+  font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+  padding: 7px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 250ms;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  }
+  
+  .contract:hover {
+  box-shadow: rgba(44,187,99,.35) 0 -25px 18px -14px inset,rgba(44,187,99,.25) 0 1px 2px,rgba(44,187,99,.25) 0 2px 4px,rgba(44,187,99,.25) 0 4px 8px,rgba(44,187,99,.25) 0 8px 16px,rgba(44,187,99,.25) 0 16px 32px;
+  transform: scale(1.05) rotate(-1deg);
+  }
+  
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #000000;
+    box-shadow: 0 10px 10px 0 rgba(0,0,0,0.2);
+    padding: 10px;
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    /* ตรวจสอบให้แน่ใจว่าไม่มี text-align เพราะมันจะไม่จำเป็นสำหรับ flex items */
+  }
+  
+  
+  .header, .steps-buttons, .language-contract-buttons {
+  flex-basis: 100%; /* Takes full width on smaller screens */
+  display: flex;
+  justify-content: center;
+  margin: 5px 0; /* Adds some space around the items */
+  }
+  
+  .steps-buttons {
+  flex-grow: 1; /* Allows this div to grow and take available space */
+  }
+  
+  .language-contract-buttons {
+  justify-content: flex-end;
+  }
+  
+  /* Media query for larger screens */
+  @media (min-width: 768px) {
+  .header, .steps-buttons, .language-contract-buttons {
+      flex-basis: auto; /* Takes up only as much space as needed */
+  }
+  .header {
+      justify-content: flex-start;
+  }
+  .steps-buttons {
+      justify-content: center;
+  }
+  .language-contract-buttons {
+      justify-content: flex-end;
+  }
+  }
+  
+  #pinTable {
+  margin-top: 15px; /* Adjust the value as needed */
+  }
+  
+  
+  #surveyTable-0 {
+  margin-top: 15px; /* Adjust the value as needed */
+  }
+  
+  #measurementTable {
+  margin-top: 15px; /* Adjust the value as needed */
+  }
+  #deplatTable {
+  margin-top: 15px; /* Adjust the value as needed */
+  }
+  #myTable3 {
+  margin-top: 15px; /* Adjust the value as needed */
+  }
+  
+  
+  #map {
+  margin-top: 15px; /* Adjust the value as needed */
+  }
+  #additionalTable {
+    margin-top: 15px; /* Adjust the value as needed */
+    }
+  
+  .bold-header {
+    font-weight: bold;
+  }
+  
+  @media (min-width: 768px) {
+    .button-66 {
+      padding: 16px 44px;
+      min-width: 150px;
+    }
+  }
+  
+  .step-btna.active:before {
+    content: "";
+    background: linear-gradient(
+      45deg,
+      #ff7300,
+      #0ef16c,
+      #ff7300,
+      #48ff00
+    );
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing-step-btn 60s linear infinite;
+    border-radius: 1.5rem;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  @keyframes glowing-step-btn {
+    0% {
+      background-position: 0 0;
+    }
+    50% {
+      background-position: 400% 0;
+    }
+    100% {
+      background-position: 0 0;
+    }
+  }
+  
+  .step-btna.active {
+    position: relative;
+    z-index: 1;
+    color: #fff; /* Text color when active */
+  }
+  
+  
+  /* CSS */
+  .button-66 {
+    background-color: #24db58;
+    border-radius: 12px;
+    color: #000;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 15px;
+    text-align: center;
+    transition: 200ms;
+    width: 100%;
+    box-sizing: border-box;
+    border: 0;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    margin-left: 10px;
+  }
+  
+  .button-66:not(:disabled):hover,
+  .button-66:not(:disabled):focus {
+    outline: 0;
+    background: #0ed60b;
+    box-shadow: 0 0 0 2px rgb(249, 249, 249), 0 3px 8px 0 rgb(255, 255, 255);
+  }
+  
+  .button-66:disabled {
+    filter: saturate(0.2) opacity(0.5);
+    -webkit-filter: saturate(0.2) opacity(0.5);
+    cursor: not-allowed;
+  }
+  
+  #additionalTable {
+    border-collapse: collapse;
+    margin-left: 0; /* ตั้งค่า margin ด้านซ้ายเป็น 0 เพื่อให้ชิดขอบซ้าย */
+    width: auto; /* กำหนดความกว้างตารางตามเนื้อหาภายใน */
+  }
+  
+  #additionalTable th, #additionalTable td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+  }
+  
+  /* ปรับให้ข้อความหัวตารางชิดซ้าย */
+  #additionalTable th {
+    text-align: left; 
+  }
+  
+  /* กำหนดให้เนื้อหาภายในเซลล์ตารางอยู่ตรงกลาง */
+  #additionalTable td {
+    text-align: center; 
+  }
+  
+  
+  #additionalTable {
+    margin-top: 30px; /* Adjust the value as needed */
+    }
+  
+    /* แก้ไข CSS ให้ตรงกับตารางใหม่ */
+  #step3Table {
+    border-collapse: collapse;
+    margin-left: auto; /* ทำให้ตารางชิดขวา */
+  }
+  
+  #step3Table th, #step3Table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center; /* ข้อความอยู่กลางเซลล์ */
+  }
+  
+  /* ตั้งค่าสำหรับช่อง input */
+  #step3Table td input[type="number"] {
+    width: 100%; /* ช่อง input ครอบคลุมทั้งเซลล์ */
+    box-sizing: border-box; /* คำนวณ padding และ border ในขนาดโดยรวม */
+  }
+  
+  #step3Table {
+    margin-top: 30px; /* Adjust the value as needed */
+    margin-left: 0;
+    }
+  
+    #step3Table {
+      border-collapse: collapse;
+      margin-left: 0; /* ตั้งค่า margin ด้านซ้ายเป็น 0 เพื่อให้ชิดขอบซ้าย */
+      width: auto; /* กำหนดความกว้างตารางตามเนื้อหาภายใน */
+    }
+    
+    #step3Table th, #step3Table td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+    }
+    
+    /* ปรับให้ข้อความหัวตารางชิดซ้าย */
+    #step3Table th {
+      text-align: left; 
+    }
+    
+    /* กำหนดให้เนื้อหาภายในเซลล์ตารางอยู่ตรงกลาง */
+    #step3Table td {
+      text-align: center; 
+    }
+  
+    .ok4747 {
+      color: green;
+  }
+  .not-ok4747 {
+      color: red;
+  }
+  
+  #newImage {
+    display: none; /* ซ่อนรูปภาพเริ่มต้น */
+    max-width: 100%; /* ปรับขนาดรูปภาพให้พอดีกับพื้นที่ */
+    height: auto; /* ปรับความสูงให้พอดีกับขนาดของรูปภาพ */
+  }
+  
+  
+  /* CSS */
+  .standard1 {
+    background-image: linear-gradient(#f7f8fa ,#e7e9ec);
+    border-color: #adb1b8 #a2a6ac #8d9096;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 3px;
+    box-shadow: rgba(255,255,255,.6) 0 1px 0 inset;
+    box-sizing: border-box;
+    color: #0f1111;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Amazon Ember",Arial,sans-serif;
+    font-size: 14px;
+    height: 29px;
+    font-size: 13px;
+    outline: 0;
+    overflow: hidden;
+    padding: 0 11px;
+    text-align: center;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+  }
+  
+  .standard1:active {
+    border-bottom-color: #a2a6ac;
+  }
+  
+  .standard1:active:hover {
+    border-bottom-color: #a2a6ac;
+  }
+  
+  .standard1:hover {
+    border-color: #a2a6ac #979aa1 #82858a;
+  }
+  
+  .standard1:focus {
+    border-color: #e77600;
+    box-shadow: rgba(228, 121, 17, .5) 0 0 3px 2px;
+    outline: 0;
+  }
+  
+  .standard1a {
+    background-image: linear-gradient(#f7f8fa ,#e7e9ec);
+    border-color: #adb1b8 #a2a6ac #8d9096;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 3px;
+    box-shadow: rgba(255,255,255,.6) 0 1px 0 inset;
+    box-sizing: border-box;
+    color: #0f1111;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Amazon Ember",Arial,sans-serif;
+    font-size: 14px;
+    height: 29px;
+    font-size: 13px;
+    outline: 0;
+    overflow: hidden;
+    padding: 0 11px;
+    text-align: center;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+  }
+  
+  .standard1a:active {
+    border-bottom-color: #a2a6ac;
+  }
+  
+  .standard1a:active:hover {
+    border-bottom-color: #a2a6ac;
+  }
+  
+  .standard1a:hover {
+    border-color: #a2a6ac #979aa1 #82858a;
+  }
+  
+  .standard1a:focus {
+    border-color: #e77600;
+    box-shadow: rgba(228, 121, 17, .5) 0 0 3px 2px;
+    outline: 0;
+  }
+  
+  .standard1a {
+    margin-top: 15px;
+  }
+  
+  .standard1 {
+    margin-top: 15px;
+  }
